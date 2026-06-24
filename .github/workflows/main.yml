@@ -26,4 +26,4 @@ jobs:
 
       - name: Deploy to nginx
         run: |
-          sudo cp -r frontend/dist/* /var/www/html/
+          sudo cp -r dist/* /var/www/html/

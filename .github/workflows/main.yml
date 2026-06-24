@@ -1,0 +1,23 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: [react]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Deploy to nginx
+        run: |
+          sudo cp -r frontend/dist/* /var/www/html/

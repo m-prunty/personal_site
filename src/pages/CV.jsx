@@ -4,13 +4,13 @@ import md from "/resume.md";
 
 function CV() {
   return (
-    <div className="cv">
+    <div className="cv" style={{ padding: '40px' }}>
        <div className="cv-header">
         <h1>My CV</h1>
-        <p className="subtitle">Backend Developer · C / Python · Linux</p>
+        <h2 className="subtitle">Backend Developer · C / Python · Linux</h2>
       </div>
 
-      <div className="md">
+      <div className="md" style={{ padding: '40px' }}>
         <MDRender filename={md} />
       </div>
     </div>

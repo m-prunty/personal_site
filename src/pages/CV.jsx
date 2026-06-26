@@ -2,10 +2,10 @@ import React from "react";
 import { MDRender } from "../components/Markdown";
 import md from "/resume.md";
 
-function About() {
+function CV() {
   return (
-    <div className="about">
-       <div className="about-header">
+    <div className="cv">
+       <div className="cv-header">
         <h1>My CV</h1>
         <p className="subtitle">Backend Developer · C / Python · Linux</p>
       </div>
@@ -17,4 +17,4 @@ function About() {
   );
 }
 
-export default About;
+export default CV;

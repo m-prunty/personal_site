@@ -30,8 +30,9 @@ function Navbar() {
       <div className="links">
         <img src={ Logo } alt="logo" className="logo" />
         <Link to="/"> Home </Link>
-        <Link to="/about"> About </Link>
+        <Link to="/cv"> CV </Link>
         <Link to="/experience"> Experience </Link>
+        <Link to="/shippybooks"> ShippyBooks </Link>
       </div>
     </div>
   

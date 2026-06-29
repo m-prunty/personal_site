@@ -9,7 +9,6 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "yarn run dev && cd ../backend && nodemon index.js && exit 1"
-
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -19,6 +18,7 @@
     "@mui/styled-engine": "^5.15.14",
     "@mui/styles": "^5.15.18",
     "axios": "^1.7.2",
+    "node-fetch": "^3.3.2",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

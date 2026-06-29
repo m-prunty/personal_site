@@ -10,14 +10,18 @@ export default function Books() {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    await api.createBook(form);
+    await api.createBook({
+	    ...form,
+	    price: parseFloat(form.price),
+	    stock: parseInt(form.stock, 10),
+    });
     setBooks(await api.listBooks());
     setForm({ title: '', author: '', price: '', stock: '' });
   };
 
   const handleStock = async (e) => {
     e.preventDefault();
-    await api.updateStock(stockUpdate.bookId, stockUpdate.quantity);
+    await api.updateStock(stockUpdate.bookId, parseInt(stockUpdate.quantity, 10));
     setBooks(await api.listBooks());
     setStockUpdate({ bookId: '', quantity: '' });
   };

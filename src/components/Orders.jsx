@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { api } from '../api';
+import React, { useEffect, useState } from "react";
+import { api } from "../api";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
-  const [orderItems, setOrderItems] = useState([]);   // [[bookId, qty], ...]
-  const [itemForm, setItemForm] = useState({ bookId: '', qty: '' });
-  const [statusUpdate, setStatusUpdate] = useState({ orderId: '', status: '' });
+  const [orderItems, setOrderItems] = useState([]); // [[bookId, qty], ...]
+  const [itemForm, setItemForm] = useState({ bookId: "", qty: "" });
+  const [statusUpdate, setStatusUpdate] = useState({ orderId: "", status: "" });
 
-  useEffect(() => { api.listOrders().then(setOrders); }, []);
+  useEffect(() => {
+    api.listOrders().then(setOrders);
+  }, []);
 
   const handleAddItem = (e) => {
     e.preventDefault();
-  
+
     setOrderItems([
       ...orderItems,
       {
@@ -19,8 +21,8 @@ export default function Orders() {
         quantity: parseInt(itemForm.qty, 10),
       },
     ]);
-  
-    setItemForm({ bookId: '', qty: '' });
+
+    setItemForm({ bookId: "", qty: "" });
   };
 
   const handleRemoveItem = (index) => {
@@ -38,7 +40,7 @@ export default function Orders() {
     e.preventDefault();
     await api.changeStatus(statusUpdate.orderId, statusUpdate.status);
     setOrders(await api.listOrders());
-    setStatusUpdate({ orderId: '', status: '' });
+    setStatusUpdate({ orderId: "", status: "" });
   };
 
   return (
@@ -65,9 +67,9 @@ export default function Orders() {
       {orderItems.length > 0 && (
         <>
           <ul>
-	    {orderItems.map((item, i) => (
+            {orderItems.map((item, i) => (
               <li key={i}>
-		{item.book_id} × {item.quantity}
+                {item.book_id} × {item.quantity}
                 <button onClick={() => handleRemoveItem(i)}>Remove</button>
               </li>
             ))}
@@ -82,13 +84,17 @@ export default function Orders() {
         <input
           placeholder="Order ID"
           value={statusUpdate.orderId}
-          onChange={(e) => setStatusUpdate({ ...statusUpdate, orderId: e.target.value })}
+          onChange={(e) =>
+            setStatusUpdate({ ...statusUpdate, orderId: e.target.value })
+          }
           required
         />
         <input
           placeholder="Status"
           value={statusUpdate.status}
-          onChange={(e) => setStatusUpdate({ ...statusUpdate, status: e.target.value })}
+          onChange={(e) =>
+            setStatusUpdate({ ...statusUpdate, status: e.target.value })
+          }
           required
         />
         <button>Change Status</button>
@@ -97,8 +103,10 @@ export default function Orders() {
       <ul>
         {orders.map((o) => (
           <li key={o.id}>
-            Order {o.id} - {o.status}{' '}
-            <button onClick={() => api.getOrder(o.id).then(console.log)}>Details</button>
+            Order {o.id} - {o.status}{" "}
+            <button onClick={() => api.getOrder(o.id).then(console.log)}>
+              Details
+            </button>
           </li>
         ))}
       </ul>

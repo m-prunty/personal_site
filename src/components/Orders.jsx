@@ -11,7 +11,15 @@ export default function Orders() {
 
   const handleAddItem = (e) => {
     e.preventDefault();
-    setOrderItems([...orderItems, [itemForm.bookId, parseInt(itemForm.qty, 10)]]);
+  
+    setOrderItems([
+      ...orderItems,
+      {
+        book_id: itemForm.bookId,
+        quantity: parseInt(itemForm.qty, 10),
+      },
+    ]);
+  
     setItemForm({ bookId: '', qty: '' });
   };
 
@@ -57,9 +65,9 @@ export default function Orders() {
       {orderItems.length > 0 && (
         <>
           <ul>
-            {orderItems.map(([bookId, qty], i) => (
+	    {orderItems.map((item, i) => (
               <li key={i}>
-                {bookId} × {qty}{' '}
+		{item.book_id} × {item.quantity}
                 <button onClick={() => handleRemoveItem(i)}>Remove</button>
               </li>
             ))}

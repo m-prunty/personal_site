@@ -1,14 +1,5 @@
 import "./App.css";
-<<<<<<< HEAD:src/App.jsx
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
-=======
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
->>>>>>> origin/tsport:src/App.tsx
 import Home from "./pages/Home";
 import CV from "./pages/CV";
 import Experience from "./pages/Experience";

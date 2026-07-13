@@ -1,19 +1,45 @@
-import React from "react";
 import {
   VerticalTimeline,
   VerticalTimelineElement,
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
-import SchoolIcon from "@mui/icons-material/School";
-import WorkIcon from "@mui/icons-material/Work";
+import { School as SchoolIcon, Work as WorkIcon } from "@mui/icons-material";
 
 function Experience() {
   return (
     <div className="experience">
       <VerticalTimeline lineColor="#3e497a">
         <VerticalTimelineElement
+          className="vertical-timeline-element--work"
+          date="2026 - current"
+          iconStyle={{ background: "#e9d35b", color: "#fff" }}
+          icon={<WorkIcon />}
+        >
+          <h3 className="vertical-timeline-element-title">Alignerr</h3>
+          <h4 className="vertical-timeline-element-subtitle">
+            <a href="https://www.alignerr.com/"> Company site </a>
+          </h4>
+          <p>Python, OOP, Design principles, AI training</p>
+        </VerticalTimelineElement>
+
+        <VerticalTimelineElement
           className="vertical-timeline-element--education"
-          date="2023 - 2025(projected)"
+          date="2025 - current"
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          icon={<SchoolIcon />}
+        >
+          <h3 className="vertical-timeline-element-title">42 Heilbronn</h3>
+          <h4 className="vertical-timeline-element-subtitle">
+            <a href="https://www.42heilbronn.de/en/learning-model/">42 Next </a>
+          </h4>
+          <p>
+            Python, OOP, AI, C/C++, Linux, Bash scripting, Vim, Code Review{" "}
+          </p>
+        </VerticalTimelineElement>
+
+        <VerticalTimelineElement
+          className="vertical-timeline-element--education"
+          date="2023 - 2025"
           iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
@@ -21,7 +47,7 @@ function Experience() {
           <h4 className="vertical-timeline-element-subtitle">
             <a href="https://42london.com/curriculum/">42 Common Core </a>
           </h4>
-          <p>C/C++, Linux, Bash scripting, Vim </p>
+          <p>C/C++, Linux, Bash scripting, Vim, Code Review </p>
         </VerticalTimelineElement>
 
         <VerticalTimelineElement
@@ -87,7 +113,7 @@ function Experience() {
 
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
-          date="2006 - 2023"
+          date="2006 - 2025"
           iconStyle={{ background: "#e9d35b", color: "#fff" }}
           icon={<WorkIcon />}
         >

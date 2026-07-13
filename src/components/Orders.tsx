@@ -1,17 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api";
+import { ORDER_STATUSES } from "../types";
+import type { Order, OrderItem, OrderStatus } from "../types";
+
+interface ItemFormState {
+  bookId: string;
+  qty: string;
+}
+
+interface StatusUpdateState {
+  orderId: string;
+  status: OrderStatus | "";
+}
 
 export default function Orders() {
-  const [orders, setOrders] = useState([]);
-  const [orderItems, setOrderItems] = useState([]); // [[bookId, qty], ...]
-  const [itemForm, setItemForm] = useState({ bookId: "", qty: "" });
-  const [statusUpdate, setStatusUpdate] = useState({ orderId: "", status: "" });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [itemForm, setItemForm] = useState<ItemFormState>({
+    bookId: "",
+    qty: "",
+  });
+  const [statusUpdate, setStatusUpdate] = useState<StatusUpdateState>({
+    orderId: "",
+    status: "",
+  });
 
   useEffect(() => {
     api.listOrders().then(setOrders);
   }, []);
 
-  const handleAddItem = (e) => {
+  const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setOrderItems([
@@ -25,24 +43,26 @@ export default function Orders() {
     setItemForm({ bookId: "", qty: "" });
   };
 
-  const handleRemoveItem = (index) => {
+  const handleRemoveItem = (index: number) => {
     setOrderItems(orderItems.filter((_, i) => i !== index));
   };
 
-  const handleCreate = async (e) => {
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await api.createOrder(orderItems);
     setOrders(await api.listOrders());
     setOrderItems([]);
   };
 
-  const handleStatus = async (e) => {
+  const handleStatus = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!statusUpdate.status) {
+      return;
+    }
     await api.changeStatus(statusUpdate.orderId, statusUpdate.status);
     setOrders(await api.listOrders());
     setStatusUpdate({ orderId: "", status: "" });
   };
-
   return (
     <div>
       <h2>Orders</h2>
@@ -51,14 +71,18 @@ export default function Orders() {
         <input
           placeholder="Book ID"
           value={itemForm.bookId}
-          onChange={(e) => setItemForm({ ...itemForm, bookId: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setItemForm({ ...itemForm, bookId: e.target.value })
+          }
           required
         />
         <input
           type="number"
           placeholder="Qty"
           value={itemForm.qty}
-          onChange={(e) => setItemForm({ ...itemForm, qty: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setItemForm({ ...itemForm, qty: e.target.value })
+          }
           required
         />
         <button>Add Item</button>
@@ -84,19 +108,30 @@ export default function Orders() {
         <input
           placeholder="Order ID"
           value={statusUpdate.orderId}
-          onChange={(e) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setStatusUpdate({ ...statusUpdate, orderId: e.target.value })
           }
           required
         />
-        <input
-          placeholder="Status"
+        <select
           value={statusUpdate.status}
           onChange={(e) =>
-            setStatusUpdate({ ...statusUpdate, status: e.target.value })
+            setStatusUpdate({
+              ...statusUpdate,
+              status: e.target.value as OrderStatus,
+            })
           }
           required
-        />
+        >
+          <option value="" disabled>
+            Select a status
+          </option>
+          {ORDER_STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </option>
+          ))}
+        </select>{" "}
         <button>Change Status</button>
       </form>
 

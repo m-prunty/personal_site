@@ -1,4 +1,3 @@
-import React from "react";
 import { MDRender } from "../components/Markdown";
 import md from "/resume.md";
 

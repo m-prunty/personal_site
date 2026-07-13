@@ -1,39 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api";
+import type { Book } from "../types";
+
+interface BookFormState {
+  title: string;
+  author: string;
+  price: string;
+  stock: string;
+}
+
+interface StockUpdateState {
+  bookId: string;
+  quantity: string;
+}
+
+const emptyForm: BookFormState = {
+  title: "Neuromancer",
+  author: "William Gibson",
+  price: "10.99",
+  stock: "5",
+};
+const emptyStockUpdate: StockUpdateState = { bookId: "", quantity: "" };
 
 export default function Books() {
-  const [books, setBooks] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    author: "",
-    price: "",
-    stock: "",
-  });
-  const [stockUpdate, setStockUpdate] = useState({ bookId: "", quantity: "" });
+  const [books, setBooks] = useState<Book[]>([]);
+  const [form, setForm] = useState<BookFormState>(emptyForm);
+  const [stockUpdate, setStockUpdate] =
+    useState<StockUpdateState>(emptyStockUpdate);
 
   useEffect(() => {
     api.listBooks().then(setBooks);
   }, []);
 
-  const handleCreate = async (e) => {
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await api.createBook({
-      ...form,
+      title: form.title,
+      author: form.author,
       price: parseFloat(form.price),
       stock: parseInt(form.stock, 10),
     });
     setBooks(await api.listBooks());
-    setForm({ title: "", author: "", price: "", stock: "" });
+    setForm(emptyForm);
   };
 
-  const handleStock = async (e) => {
+  const handleStock = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await api.updateStock(
       stockUpdate.bookId,
       parseInt(stockUpdate.quantity, 10),
     );
     setBooks(await api.listBooks());
-    setStockUpdate({ bookId: "", quantity: "" });
+    setStockUpdate(emptyStockUpdate);
   };
 
   return (
@@ -44,27 +62,35 @@ export default function Books() {
         <input
           placeholder="Title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setForm({ ...form, title: e.target.value })
+          }
           required
         />
         <input
           placeholder="Author"
           value={form.author}
-          onChange={(e) => setForm({ ...form, author: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setForm({ ...form, author: e.target.value })
+          }
           required
         />
         <input
           type="number"
           placeholder="Price"
           value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setForm({ ...form, price: e.target.value })
+          }
           required
         />
         <input
           type="number"
           placeholder="Stock"
           value={form.stock}
-          onChange={(e) => setForm({ ...form, stock: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setForm({ ...form, stock: e.target.value })
+          }
           required
         />
         <button>Create</button>
@@ -74,7 +100,7 @@ export default function Books() {
         <input
           placeholder="Book ID"
           value={stockUpdate.bookId}
-          onChange={(e) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setStockUpdate({ ...stockUpdate, bookId: e.target.value })
           }
           required
@@ -83,7 +109,7 @@ export default function Books() {
           type="number"
           placeholder="Quantity"
           value={stockUpdate.quantity}
-          onChange={(e) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setStockUpdate({ ...stockUpdate, quantity: e.target.value })
           }
           required

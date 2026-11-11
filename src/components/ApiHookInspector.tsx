@@ -4,6 +4,7 @@ import type { ApiActivityEntry } from "../apiActivity";
 import type { AppNotification } from "../types";
 import type { SseStatus } from "../hooks/useNotifications";
 import { correlateNotification } from "../utils/notificationContext";
+import "../styles/Books.css";
 
 function preview(value: unknown): string {
   if (value === undefined) return "—";
@@ -15,17 +16,24 @@ function preview(value: unknown): string {
   }
 }
 
-function statusColor(status: ApiActivityEntry["status"]): string {
-  if (status === "success") return "#16a34a";
-  if (status === "error") return "#dc2626";
-  return "#2563eb";
+function statusClass(status: ApiActivityEntry["status"]): string {
+  if (status === "success") return "status-success";
+  if (status === "error") return "status-error";
+  return "status-pending";
 }
 
-function sseColor(status?: SseStatus): string {
-  if (status === "open") return "#16a34a";
-  if (status === "error") return "#dc2626";
-  return "#2563eb";
+function sseBadge(status?: SseStatus): string {
+  if (status === "open") return "badge badge-open";
+  if (status === "error") return "badge badge-error";
+  return "badge badge-pending";
 }
+
+const SAMPLE_HINTS = [
+  { hook: "api.createBook", sample: { title: "Neuromancer", author: "William Gibson", price: 10.99, stock: 5 } },
+  { hook: "api.updateStock", sample: { bookId: "<book-id>", quantity: 5 } },
+  { hook: "api.createOrder", sample: { items: [{ book_id: "<book-id>", quantity: 1 }] } },
+  { hook: "api.changeStatus", sample: { orderId: "<order-id>", status: "processing" } },
+];
 
 export default function ApiHookInspector({
   notifications = [],
@@ -42,92 +50,81 @@ export default function ApiHookInspector({
     [notifications, entries],
   );
 
+  const metrics = useMemo(() => {
+    const byHook: Record<string, { count: number; success: number; error: number; totalMs: number; timed: number }> = {};
+    let total = 0, success = 0, error = 0, pending = 0, totalMs = 0, timed = 0;
+    for (const e of entries) {
+      total += 1;
+      if (e.status === "success") success += 1;
+      else if (e.status === "error") error += 1;
+      else pending += 1;
+      const m = (byHook[e.hook] ||= { count: 0, success: 0, error: 0, totalMs: 0, timed: 0 });
+      m.count += 1;
+      if (e.status === "success") m.success += 1;
+      if (e.status === "error") m.error += 1;
+      if (typeof e.durationMs === "number") { m.totalMs += e.durationMs; m.timed += 1; totalMs += e.durationMs; timed += 1; }
+    }
+    return { total, success, error, pending, avgMs: timed ? Math.round(totalMs / timed) : null, byHook };
+  }, [entries]);
+
   return (
-    <section
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 8,
-        margin: "12px 0 20px",
-        background: "#fafafa",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 12px",
-          borderBottom: open ? "1px solid #e5e7eb" : "none",
-          gap: 8,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+    <section className="inspector" aria-label="API Hook Inspector">
+      <div className="inspector-header" style={{ borderBottom: open ? "1px solid #e5e7eb" : "none" }}>
+        <div className="showcase-row">
           <button
             onClick={() => setOpen((v) => !v)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: 14,
-              padding: 0,
-            }}
+            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontSize: 14, padding: 0 }}
             aria-expanded={open}
           >
             {open ? "▾" : "▸"} API Hook Inspector ({entries.length})
           </button>
-          {sseStatus && (
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#fff",
-                background: sseColor(sseStatus),
-                borderRadius: 999,
-                padding: "2px 8px",
-              }}
-              title="SSE notifications stream status"
-            >
-              SSE: {sseStatus}
-            </span>
-          )}
+          {sseStatus && <span className={sseBadge(sseStatus)} title="SSE notifications stream status">SSE: {sseStatus}</span>}
         </div>
-        <button
-          onClick={clear}
-          style={{
-            fontSize: 12,
-            padding: "4px 8px",
-            border: "1px solid #d1d5db",
-            borderRadius: 4,
-            background: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Clear
-        </button>
+        <button onClick={clear} style={{ fontSize: 12, padding: "4px 8px", border: "1px solid #d1d5db", borderRadius: 4, background: "#fff", cursor: "pointer" }}>Clear</button>
       </div>
       {open && (
-        <div style={{ padding: 12, display: "grid", gap: 12 }}>
+        <div className="inspector-body">
+          <div className="card">
+            <h4 style={{ margin: "0 0 6px" }}>Hook Metrics</h4>
+            <div className="info">Total: {metrics.total} · Success: {metrics.success} · Error: {metrics.error} · Pending: {metrics.pending} · Avg latency: {metrics.avgMs != null ? `${metrics.avgMs} ms` : "—"}</div>
+            {Object.keys(metrics.byHook).length > 0 && (
+              <div className="table-wrap" style={{ marginTop: 6 }}>
+                <table className="data-table" aria-label="Hook metrics by endpoint">
+                  <thead><tr><th>Hook</th><th>Calls</th><th>OK</th><th>Err</th><th>Avg ms</th></tr></thead>
+                  <tbody>
+                    {Object.entries(metrics.byHook).map(([hook, m]) => (
+                      <tr key={hook}><td><code>{hook}</code></td><td>{m.count}</td><td>{m.success}</td><td>{m.error}</td><td>{m.timed ? Math.round(m.totalMs / m.timed) : "—"}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <h4 style={{ margin: "0 0 6px" }}>Sample Payload Hints</h4>
+            <div className="card-list">
+              {SAMPLE_HINTS.map((h) => (
+                <div key={h.hook}><strong><code>{h.hook}</code></strong><pre className="pre" style={{ marginTop: 4 }}>{JSON.stringify(h.sample, null, 2)}</pre></div>
+              ))}
+            </div>
+          </div>
+
           <div>
             <h4 style={{ margin: "0 0 6px" }}>Notification Context (SSE)</h4>
             {correlations.length === 0 ? (
-              <div style={{ color: "#6b7280", fontSize: 13 }}>
-                No notifications yet. Events and inferred entity/action links will appear here.
-              </div>
+              <div className="muted">No notifications yet. Events and inferred entity/action links will appear here.</div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div className="card-list">
                 {correlations.map((c) => (
-                  <div key={c.notification.id} style={{ border: "1px solid #e5e7eb", borderRadius: 6, padding: 8, background: "#fff", fontSize: 12 }}>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
+                  <div key={c.notification.id} className="card">
+                    <div className="showcase-row" style={{ marginBottom: 4 }}>
                       <strong>{c.notification.kind}</strong>
-                      {c.actionHint && <span style={{ color: "#374151" }}>{c.actionHint}</span>}
-                      {c.entityType && <span style={{ color: "#6b7280" }}>entity: {c.entityType}</span>}
+                      {c.actionHint && <span className="info">{c.actionHint}</span>}
+                      {c.entityType && <span className="muted">entity: {c.entityType}</span>}
                     </div>
                     <div style={{ marginBottom: 4 }}>{c.notification.message}</div>
-                    <div style={{ color: "#6b7280" }}>
-                      inferred IDs: {c.entityIds.length ? c.entityIds.join(", ") : "none"}; related hooks: {c.relatedHooks.length ? c.relatedHooks.join(", ") : "none (recent/heuristic)"}
-                    </div>
+                    <div className="muted">inferred IDs: {c.entityIds.length ? c.entityIds.join(", ") : "none"}; related hooks: {c.relatedHooks.length ? c.relatedHooks.join(", ") : "none (recent/heuristic)"}</div>
                   </div>
                 ))}
               </div>
@@ -137,57 +134,23 @@ export default function ApiHookInspector({
           <div>
             <h4 style={{ margin: "0 0 6px" }}>Recent Hook Activity</h4>
             {entries.length === 0 ? (
-              <div style={{ color: "#6b7280", fontSize: 13 }}>
-                No API hook calls yet. Interact with Books/Orders to see activity.
-              </div>
+              <div className="muted">No API hook calls yet. Interact with Books/Orders to see activity.</div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 260, overflow: "auto" }}>
+              <div className="card-list" style={{ maxHeight: 260, overflow: "auto" }}>
                 {entries.map((e) => (
-                  <div
-                    key={e.id}
-                    style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 6,
-                      padding: 8,
-                      background: "#fff",
-                      fontSize: 12,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        alignItems: "center",
-                        marginBottom: 4,
-                      }}
-                    >
+                  <div key={e.id} className="card">
+                    <div className="showcase-row" style={{ marginBottom: 4 }}>
                       <strong>{e.hook}</strong>
-                      <span style={{ color: "#374151" }}>
-                        {e.method} {e.endpoint}
-                      </span>
-                      <span style={{ color: statusColor(e.status), fontWeight: 600 }}>
-                        {e.status.toUpperCase()}
-                      </span>
-                      {e.durationMs != null && (
-                        <span style={{ color: "#6b7280" }}>{e.durationMs} ms</span>
-                      )}
+                      <span className="info">{e.method} {e.endpoint}</span>
+                      <span className={statusClass(e.status)}>{e.status.toUpperCase()}</span>
+                      {e.durationMs != null && <span className="muted">{e.durationMs} ms</span>}
                     </div>
-                    <div style={{ display: "grid", gap: 4 }}>
-                      <div>
-                        <span style={{ color: "#6b7280" }}>Request: </span>
-                        <code style={{ whiteSpace: "pre-wrap" }}>{preview(e.request)}</code>
-                      </div>
+                    <div className="showcase-stack">
+                      <div><span className="muted">Request: </span><code style={{ whiteSpace: "pre-wrap" }}>{preview(e.request)}</code></div>
                       {e.status === "error" ? (
-                        <div>
-                          <span style={{ color: "#dc2626" }}>Error: </span>
-                          <code style={{ whiteSpace: "pre-wrap" }}>{e.error}</code>
-                        </div>
+                        <div><span className="error">Error: </span><code style={{ whiteSpace: "pre-wrap" }}>{e.error}</code></div>
                       ) : (
-                        <div>
-                          <span style={{ color: "#6b7280" }}>Response: </span>
-                          <code style={{ whiteSpace: "pre-wrap" }}>{preview(e.response)}</code>
-                        </div>
+                        <div><span className="muted">Response: </span><code style={{ whiteSpace: "pre-wrap" }}>{preview(e.response)}</code></div>
                       )}
                     </div>
                   </div>

@@ -17,6 +17,14 @@ npm run typecheck
 npm run build
 ```
 
+## Theme
+
+The site uses a global black/green terminal-inspired theme with monospace typography and shared CSS tokens (defined in `src/index.css`, aligned in `src/theme.ts` for MUI):
+
+- **Base:** `--bg` black, `--surface`/`--surface-2` dark panels, green primary text/accent (`--text`, `--accent`)
+- **Highlights:** bright blue (`--hl-blue`) for info/links/pending/SSE, purple (`--hl-purple`) for correlated/selected highlights, pale green (`--hl-pale-green`) for success/positive emphasis
+- **Danger:** `--danger` for errors
+
 ## ShippyBooks API Hooks Showcase
 
 The `/shippybooks` route provides a UI for demonstrating and inspecting the Books/Orders API hooks (backed by the shippybooks API).
@@ -39,5 +47,6 @@ Configure the backend base URL with `VITE_API_BASE` (see `.env.development` / `.
 - `src/components/Books.tsx`, `src/components/Orders.tsx` – Books/Orders hook UIs
 - `src/components/ApiHookInspector.tsx`, `src/apiActivity.ts` – hook instrumentation/inspection
 - `src/hooks/useNotifications.ts`, `src/utils/notificationContext.ts` – SSE + correlation
+- `src/index.css`, `src/theme.ts`, `src/styles/*.css` – theme tokens and styling
 - `BOOKS_ORDERS_UI_WORKPLAN.md` – staged plan and elements map
 - `HEALTH_API_SPEC.md` – proposed API health endpoint spec

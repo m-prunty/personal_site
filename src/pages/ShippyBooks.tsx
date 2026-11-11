@@ -20,7 +20,7 @@ export default function ShippyBooks() {
 
   return (
     <div className="BooksApp">
-      <div className="app-header" style={{ padding: "20px", backgroundColor: "#f5f5f5" }}>
+      <div className="app-header" style={{ padding: "20px", backgroundColor: "var(--surface)" }}>
         <h1>ShippyBooks</h1>
         <p className="info" style={{ margin: "4px 0 0" }}>
           API hooks showcase: live hook activity/metrics, SSE notifications with correlation/highlights, hybrid auto-refresh, and resilient UI states.
@@ -33,7 +33,7 @@ export default function ShippyBooks() {
           Tip: use the inspector below for request/response payloads, hook metrics, and sample hints. Details and mutations surface in-UI feedback.
         </p>
       </div>
-      <div className="app" style={{ padding: "20px", position: "relative", minHeight: "100vh", backgroundColor: "#ffffff" }}>
+      <div className="app" style={{ padding: "20px", position: "relative", minHeight: "100vh", backgroundColor: "var(--bg)" }}>
         <NotificationToast notifications={notifications} onDismiss={dismiss} />
         <ApiHookInspector notifications={notifications} sseStatus={status} />
         <Books notifications={notifications} highlightedBookIds={highlights.bookIds} />

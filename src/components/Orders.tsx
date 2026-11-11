@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import { ORDER_STATUSES } from "../types";
-import type { Book, Order, OrderItem, OrderStatus } from "../types";
+import type { AppNotification, Book, Order, OrderItem, OrderStatus } from "../types";
 import { useAsync } from "../hooks/useAsync";
 
 type BookListItem = Partial<Book> & { id: string; title?: string; stock?: number; author?: string };
@@ -38,7 +38,13 @@ function normalizeStatus(status: unknown): string {
   return String(status ?? "unknown");
 }
 
-export default function Orders() {
+export default function Orders({
+  notifications = [],
+  highlightedOrderIds,
+}: {
+  notifications?: AppNotification[];
+  highlightedOrderIds?: Set<string>;
+}) {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [books, setBooks] = useState<BookListItem[]>([]);
   const [ordersStatus, setOrdersStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -58,6 +64,7 @@ export default function Orders() {
   const [lastStatusTransition, setLastStatusTransition] = useState<{ orderId: string; from?: string; to: string } | null>(null);
 
   const orderDetail = useAsync<Order, [string]>();
+  const handledNotifIdsRef = useRef<Set<string>>(new Set());
 
   const bookById = useMemo(() => {
     const map = new Map<string, BookListItem>();
@@ -98,6 +105,22 @@ export default function Orders() {
   useEffect(() => {
     void refreshAll();
   }, [refreshAll]);
+
+  useEffect(() => {
+    const relevant = notifications.filter(
+      (n) =>
+        (n.kind === "order_confirmation" || n.kind === "status_update" || n.kind === "stock_alert") &&
+        !handledNotifIdsRef.current.has(n.id),
+    );
+    if (relevant.length === 0) return;
+    relevant.forEach((n) => handledNotifIdsRef.current.add(n.id));
+    // stock alerts can affect book context; order events affect orders
+    void refreshOrders();
+    void refreshBooks();
+    if (orderDetail.status === "success" && (orderDetail.data as OrderListItem | null)?.id) {
+      void orderDetail.run(api.getOrder, (orderDetail.data as OrderListItem).id);
+    }
+  }, [notifications, refreshOrders, refreshBooks, orderDetail]);
 
   const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -354,15 +377,20 @@ export default function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((o) => (
-                  <tr key={o.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                    <td style={{ padding: "8px 6px", fontFamily: "monospace", fontSize: 12 }}>{o.id}</td>
-                    <td style={{ padding: "8px 6px" }}>{normalizeStatus(o.status)}</td>
-                    <td style={{ padding: "8px 6px" }}>
-                      <button onClick={() => orderDetail.run(api.getOrder, o.id)}>Details (api.getOrder)</button>
-                    </td>
-                  </tr>
-                ))}
+                {orders.map((o) => {
+                  const highlighted = highlightedOrderIds?.has(o.id);
+                  return (
+                    <tr key={o.id} style={{ borderBottom: "1px solid #f3f4f6", background: highlighted ? "#eff6ff" : undefined }}>
+                      <td style={{ padding: "8px 6px", fontFamily: "monospace", fontSize: 12 }}>
+                        {o.id} {highlighted ? <span title="Related to recent notification">●</span> : null}
+                      </td>
+                      <td style={{ padding: "8px 6px" }}>{normalizeStatus(o.status)}</td>
+                      <td style={{ padding: "8px 6px" }}>
+                        <button onClick={() => orderDetail.run(api.getOrder, o.id)}>Details (api.getOrder)</button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -377,7 +405,7 @@ export default function Orders() {
         {orderDetail.status === "loading" && <div>Loading order details…</div>}
         {orderDetail.status === "error" && <div style={{ color: "#dc2626" }}>Error: {orderDetail.error}</div>}
         {orderDetail.status === "success" && orderDetail.data && (
-          <div style={{ display: "grid", gap: 8 }}>
+          <div style={{ display: "grid", gap: 8, background: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? "#eff6ff" : undefined, padding: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? 8 : 0, borderRadius: 6 }}>
             <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 4, fontSize: 14 }}>
               <strong>Order ID</strong><span style={{ fontFamily: "monospace" }}>{(orderDetail.data as OrderListItem).id}</span>
               <strong>Status</strong><span>{normalizeStatus((orderDetail.data as OrderListItem).status)}</span>

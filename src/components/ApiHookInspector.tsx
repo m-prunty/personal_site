@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import Tooltip from "@mui/material/Tooltip";
 import { useApiActivity } from "../hooks/useApiActivity";
 import type { ApiActivityEntry } from "../apiActivity";
 import type { AppNotification } from "../types";
@@ -43,7 +44,7 @@ export default function ApiHookInspector({
   sseStatus?: SseStatus;
 }) {
   const { entries, clear } = useApiActivity();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const correlations = useMemo(
     () => notifications.slice(0, 10).map((n) => correlateNotification(n, entries.slice(0, 20))),
@@ -69,18 +70,22 @@ export default function ApiHookInspector({
 
   return (
     <section className="inspector" aria-label="API Hook Inspector">
-      <div className="inspector-header" style={{ borderBottom: open ? "1px solid #e5e7eb" : "none" }}>
+      <div className="inspector-header" style={{ borderBottom: open ? "1px solid var(--border)" : "none" }}>
         <div className="showcase-row">
-          <button
-            onClick={() => setOpen((v) => !v)}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontSize: 14, padding: 0 }}
-            aria-expanded={open}
-          >
-            {open ? "▾" : "▸"} API Hook Inspector ({entries.length})
-          </button>
+          <Tooltip title="Toggle API hook inspector panel (request/response metrics and notification context)" arrow>
+            <span>
+              <button
+                onClick={() => setOpen((v) => !v)}
+                style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontSize: 14, padding: 0 }}
+                aria-expanded={open}
+              >
+                {open ? "▾" : "▸"} API Hook Inspector ({entries.length})
+              </button>
+            </span>
+          </Tooltip>
           {sseStatus && <span className={sseBadge(sseStatus)} title="SSE notifications stream status">SSE: {sseStatus}</span>}
         </div>
-        <button onClick={clear} style={{ fontSize: 12, padding: "4px 8px", border: "1px solid var(--border)", borderRadius: 4, background: "var(--surface-2)", color: "var(--text)", cursor: "pointer" }}>Clear</button>
+        <Tooltip title="Clear recorded hook activity" arrow><span><button onClick={clear} style={{ fontSize: 12, padding: "4px 8px", border: "1px solid var(--border)", borderRadius: 4, background: "var(--surface-2)", color: "var(--text)", cursor: "pointer" }}>Clear</button></span></Tooltip>
       </div>
       {open && (
         <div className="inspector-body">

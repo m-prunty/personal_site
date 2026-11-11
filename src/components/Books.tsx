@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
-import type { Book } from "../types";
+import type { AppNotification, Book } from "../types";
 import { useAsync } from "../hooks/useAsync";
 
 type BookListItem = Partial<Book> & { id: string; title?: string; stock?: number };
@@ -41,7 +41,13 @@ function parseResponseId(res: unknown): string | undefined {
   return undefined;
 }
 
-export default function Books() {
+export default function Books({
+  notifications = [],
+  highlightedBookIds,
+}: {
+  notifications?: AppNotification[];
+  highlightedBookIds?: Set<string>;
+}) {
   const [books, setBooks] = useState<BookListItem[]>([]);
   const [listStatus, setListStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [listError, setListError] = useState<string | null>(null);
@@ -57,6 +63,7 @@ export default function Books() {
   const [stockBeforeAfter, setStockBeforeAfter] = useState<{ before: number; delta: number; after: number } | null>(null);
 
   const bookDetail = useAsync<Book, [string]>();
+  const handledNotifIdsRef = useRef<Set<string>>(new Set());
 
   const refreshBooks = useCallback(async () => {
     setListStatus("loading");
@@ -74,6 +81,20 @@ export default function Books() {
   useEffect(() => {
     void refreshBooks();
   }, [refreshBooks]);
+
+  useEffect(() => {
+    const relevant = notifications.filter(
+      (n) =>
+        (n.kind === "stock_alert" || n.kind === "order_confirmation" || n.kind === "status_update") &&
+        !handledNotifIdsRef.current.has(n.id),
+    );
+    if (relevant.length === 0) return;
+    relevant.forEach((n) => handledNotifIdsRef.current.add(n.id));
+    void refreshBooks();
+    if (bookDetail.status === "success" && bookDetail.data?.id) {
+      void bookDetail.run(api.getBook, bookDetail.data.id);
+    }
+  }, [notifications, refreshBooks, bookDetail]);
 
   const selectedStockBook = useMemo(
     () => books.find((b) => b.id === stockUpdate.bookId),
@@ -286,18 +307,29 @@ export default function Books() {
                 </tr>
               </thead>
               <tbody>
-                {books.map((b) => (
-                  <tr key={b.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                    <td style={{ padding: "8px 6px", fontFamily: "monospace", fontSize: 12 }}>{b.id}</td>
-                    <td style={{ padding: "8px 6px" }}>{b.title ?? "(unknown)"}</td>
-                    <td style={{ padding: "8px 6px" }}>{b.stock ?? "?"}</td>
-                    <td style={{ padding: "8px 6px" }}>
-                      <button onClick={() => bookDetail.run(api.getBook, b.id)}>
-                        Details (api.getBook)
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {books.map((b) => {
+                  const highlighted = highlightedBookIds?.has(b.id);
+                  return (
+                    <tr
+                      key={b.id}
+                      style={{
+                        borderBottom: "1px solid #f3f4f6",
+                        background: highlighted ? "#fff7ed" : undefined,
+                      }}
+                    >
+                      <td style={{ padding: "8px 6px", fontFamily: "monospace", fontSize: 12 }}>
+                        {b.id} {highlighted ? <span title="Related to recent notification">●</span> : null}
+                      </td>
+                      <td style={{ padding: "8px 6px" }}>{b.title ?? "(unknown)"}</td>
+                      <td style={{ padding: "8px 6px" }}>{b.stock ?? "?"}</td>
+                      <td style={{ padding: "8px 6px" }}>
+                        <button onClick={() => bookDetail.run(api.getBook, b.id)}>
+                          Details (api.getBook)
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -316,7 +348,7 @@ export default function Books() {
           <div style={{ color: "#dc2626" }}>Error: {bookDetail.error}</div>
         )}
         {bookDetail.status === "success" && bookDetail.data && (
-          <div style={{ display: "grid", gap: 8 }}>
+          <div style={{ display: "grid", gap: 8, background: highlightedBookIds?.has(bookDetail.data.id) ? "#fff7ed" : undefined, padding: highlightedBookIds?.has(bookDetail.data.id) ? 8 : 0, borderRadius: 6 }}>
             <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 4, fontSize: 14 }}>
               <strong>ID</strong><span style={{ fontFamily: "monospace" }}>{bookDetail.data.id}</span>
               <strong>Title</strong><span>{bookDetail.data.title}</span>

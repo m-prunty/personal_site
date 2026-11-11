@@ -3,6 +3,7 @@ import { api } from "../api";
 import { ORDER_STATUSES } from "../types";
 import type { AppNotification, Book, Order, OrderItem, OrderStatus } from "../types";
 import { useAsync } from "../hooks/useAsync";
+import "../styles/Books.css";
 
 type BookListItem = Partial<Book> & { id: string; title?: string; stock?: number; author?: string };
 type OrderListItem = Partial<Order> & { id: string; status?: string | OrderStatus };
@@ -18,13 +19,7 @@ interface StatusUpdateState {
   status: OrderStatus | "";
 }
 
-const sectionStyle: React.CSSProperties = {
-  border: "1px solid #e5e7eb",
-  borderRadius: 8,
-  padding: 12,
-  marginTop: 12,
-  background: "#fff",
-};
+// styles centralized in src/styles/Books.css
 
 function parseResponseId(res: unknown): string | undefined {
   if (res && typeof res === "object" && "id" in res && typeof (res as { id?: unknown }).id === "string") {
@@ -77,7 +72,10 @@ export default function Orders({
     setBooksError(null);
     try {
       const data = await api.listBooks();
-      setBooks(Array.isArray(data) ? (data as BookListItem[]) : []);
+      const safe = Array.isArray(data)
+        ? (data as unknown[]).filter((b): b is BookListItem => !!b && typeof b === "object" && "id" in b && typeof (b as { id?: unknown }).id === "string")
+        : [];
+      setBooks(safe);
       setBooksStatus("success");
     } catch (err) {
       setBooksError(err instanceof Error ? err.message : String(err));
@@ -90,7 +88,10 @@ export default function Orders({
     setOrdersError(null);
     try {
       const data = await api.listOrders();
-      setOrders(data as OrderListItem[]);
+      const safe = Array.isArray(data)
+        ? (data as unknown[]).filter((o): o is OrderListItem => !!o && typeof o === "object" && "id" in o && typeof (o as { id?: unknown }).id === "string")
+        : [];
+      setOrders(safe);
       setOrdersStatus("success");
     } catch (err) {
       setOrdersError(err instanceof Error ? err.message : String(err));
@@ -182,34 +183,34 @@ export default function Orders({
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div className="showcase-row">
         <h2 style={{ margin: 0 }}>Orders</h2>
         <button onClick={() => void refreshAll()} disabled={ordersStatus === "loading" || booksStatus === "loading"}>
           {(ordersStatus === "loading" || booksStatus === "loading") ? "Refreshing..." : "Refresh (api.listOrders + api.listBooks)"}
         </button>
       </div>
-      <div style={{ marginTop: 6, fontSize: 13, color: "#374151" }}>
+      <div className="info" style={{ marginTop: 6 }}>
         Data status: books={booksStatus} ({books.length}){booksError ? ` — ${booksError}` : ""}; orders={ordersStatus} ({orders.length}){ordersError ? ` — ${ordersError}` : ""}
       </div>
-      <p style={{ margin: "4px 0 0", color: "#4b5563", fontSize: 13 }}>
+      <p className="muted" style={{ margin: 0 }}>
         Showcasing hooks: <code>createOrder</code>, <code>changeStatus</code>, <code>getOrder</code>, <code>listOrders</code> (with <code>listBooks</code>)
       </p>
 
-      <section style={sectionStyle}>
+      <section className="showcase-section">
         <h3 style={{ marginTop: 0 }}>Order Builder (createOrder payload)</h3>
-        {booksStatus === "loading" && <div style={{ fontSize: 13, color: "#374151" }}>Loading books for selection…</div>}
+        {booksStatus === "loading" && <div className="info">Loading books for selection…</div>}
         {booksStatus === "error" && (
-          <div style={{ fontSize: 13, color: "#dc2626", marginBottom: 8 }}>
+          <div className="error" style={{ marginBottom: 8 }}>
             Failed to load books: {booksError}{" "}
             <button type="button" onClick={() => void refreshBooks()}>Retry</button>
           </div>
         )}
         {booksStatus === "success" && books.length === 0 && (
-          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 8 }}>
+          <div className="muted" style={{ marginBottom: 8 }}>
             No books available. Create books first, then refresh.
           </div>
         )}
-        <form onSubmit={handleAddItem} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <form onSubmit={handleAddItem} className="showcase-row">
           <select
             value={itemForm.bookId}
             onChange={(e) => setItemForm({ ...itemForm, bookId: e.target.value })}
@@ -251,7 +252,7 @@ export default function Orders({
           <div style={{ marginTop: 8, color: "#6b7280", fontSize: 13 }}>No items added yet.</div>
         ) : (
           <div style={{ marginTop: 8, overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+            <table className="data-table">
               <thead>
                 <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
                   <th style={{ padding: "6px" }}>Book</th>
@@ -276,7 +277,7 @@ export default function Orders({
                 })}
               </tbody>
             </table>
-            <div style={{ marginTop: 6, fontSize: 13, color: "#374151" }}>
+            <div className="info" style={{ marginTop: 6 }}>
               Running summary: {orderItems.length} line item(s), total qty {orderItems.reduce((s, it) => s + it.quantity, 0)}
             </div>
           </div>
@@ -284,7 +285,7 @@ export default function Orders({
 
         <div style={{ marginTop: 10 }}>
           <strong style={{ fontSize: 13 }}>Request payload preview (api.createOrder):</strong>
-          <pre style={{ background: "#f3f4f6", padding: 8, borderRadius: 6, overflowX: "auto", fontSize: 12, marginTop: 4 }}>
+          <pre className="pre">
             {JSON.stringify({ items: orderItems }, null, 2)}
           </pre>
         </div>
@@ -294,29 +295,29 @@ export default function Orders({
             {createStatus === "loading" ? "Creating..." : "Create Order (api.createOrder)"}
           </button>
           {createStatus === "success" && (
-            <span style={{ color: "#16a34a", fontSize: 13 }}>
+            <span className="success">
               Order created{createdOrderId ? ` (id: ${createdOrderId})` : ""}.
             </span>
           )}
-          {createStatus === "error" && <span style={{ color: "#dc2626", fontSize: 13 }}>{createError}</span>}
+          {createStatus === "error" && <span className="error">{createError}</span>}
         </form>
       </section>
 
-      <section style={sectionStyle}>
+      <section className="showcase-section">
         <h3 style={{ marginTop: 0 }}>Change Status (api.changeStatus)</h3>
-        {ordersStatus === "loading" && <div style={{ fontSize: 13, color: "#374151" }}>Loading orders…</div>}
+        {ordersStatus === "loading" && <div className="info">Loading orders…</div>}
         {ordersStatus === "error" && (
-          <div style={{ fontSize: 13, color: "#dc2626", marginBottom: 8 }}>
+          <div className="error" style={{ marginBottom: 8 }}>
             Failed to load orders: {ordersError}{" "}
             <button type="button" onClick={() => void refreshOrders()}>Retry</button>
           </div>
         )}
         {ordersStatus === "success" && orders.length === 0 && (
-          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 8 }}>
+          <div className="muted" style={{ marginBottom: 8 }}>
             No orders available. Create an order first, then refresh.
           </div>
         )}
-        <form onSubmit={handleStatus} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <form onSubmit={handleStatus} className="showcase-row">
           <select
             value={statusUpdate.orderId}
             onChange={(e) => setStatusUpdate({ ...statusUpdate, orderId: e.target.value })}
@@ -346,29 +347,29 @@ export default function Orders({
             {changeStatusState === "loading" ? "Updating..." : "Change Status"}
           </button>
         </form>
-        <div style={{ marginTop: 8, fontSize: 13 }}>
+        <div className="info" style={{ marginTop: 8 }}>
           {changeStatusState === "success" && lastStatusTransition && (
-            <span style={{ color: "#16a34a" }}>
+            <span className="success">
               Transitioned order <code>{lastStatusTransition.orderId}</code>: {lastStatusTransition.from ?? "?"} → {lastStatusTransition.to}
             </span>
           )}
-          {changeStatusState === "error" && <span style={{ color: "#dc2626" }}>{changeStatusError}</span>}
-          {changeStatusState === "idle" && <span style={{ color: "#6b7280" }}>Select an order and target status to apply a transition.</span>}
+          {changeStatusState === "error" && <span className="error">{changeStatusError}</span>}
+          {changeStatusState === "idle" && <span className="muted">Select an order and target status to apply a transition.</span>}
         </div>
       </section>
 
-      <section style={sectionStyle}>
+      <section className="showcase-section">
         <h3 style={{ marginTop: 0 }}>Orders List (api.listOrders)</h3>
         {ordersStatus === "loading" && <div>Loading orders…</div>}
         {ordersStatus === "error" && (
-          <div style={{ color: "#dc2626" }}>Failed to load orders: {ordersError} <button onClick={() => void refreshOrders()}>Retry</button></div>
+          <div className="error">Failed to load orders: {ordersError} <button onClick={() => void refreshOrders()}>Retry</button></div>
         )}
         {ordersStatus !== "loading" && orders.length === 0 && ordersStatus !== "error" && (
-          <div style={{ color: "#6b7280" }}>No orders found. Create one from the builder above.</div>
+          <div className="muted">No orders found. Create one from the builder above.</div>
         )}
         {orders.length > 0 && (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
                   <th style={{ padding: "8px 6px" }}>Order ID</th>
@@ -397,13 +398,13 @@ export default function Orders({
         )}
       </section>
 
-      <section style={sectionStyle}>
+      <section className="showcase-section">
         <h3 style={{ marginTop: 0 }}>Order Details Panel (api.getOrder)</h3>
         {orderDetail.status === "idle" && (
-          <div style={{ color: "#6b7280", fontSize: 13 }}>Select an order to fetch and inspect details.</div>
+          <div className="muted">Select an order to fetch and inspect details.</div>
         )}
         {orderDetail.status === "loading" && <div>Loading order details…</div>}
-        {orderDetail.status === "error" && <div style={{ color: "#dc2626" }}>Error: {orderDetail.error}</div>}
+        {orderDetail.status === "error" && <div className="error">Error: {orderDetail.error}</div>}
         {orderDetail.status === "success" && orderDetail.data && (
           <div style={{ display: "grid", gap: 8, background: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? "#eff6ff" : undefined, padding: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? 8 : 0, borderRadius: 6 }}>
             <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 4, fontSize: 14 }}>
@@ -417,8 +418,8 @@ export default function Orders({
             <div>
               <strong>Items</strong>
               {Array.isArray((orderDetail.data as { items?: unknown }).items) && (orderDetail.data as { items: OrderDetailItem[] }).items.length > 0 ? (
-                <div style={{ overflowX: "auto", marginTop: 4 }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <div className="table-wrap" style={{ marginTop: 4 }}>
+                  <table className="data-table">
                     <thead>
                       <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
                         <th style={{ padding: "6px" }}>Book</th>
@@ -448,7 +449,7 @@ export default function Orders({
 
             <details>
               <summary style={{ cursor: "pointer" }}>Raw JSON response</summary>
-              <pre style={{ background: "#f3f4f6", padding: 8, borderRadius: 6, overflowX: "auto", fontSize: 12, marginTop: 8 }}>
+              <pre className="pre" style={{ marginTop: 8 }}>
                 {JSON.stringify(orderDetail.data, null, 2)}
               </pre>
             </details>

@@ -1,28 +1,34 @@
 .footer {
   width: 100%;
-  height: 200px;
-  background: #333339;
+  min-height: 120px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding-top: 10px;
-  margin-top: 200px;
+  padding: 24px 12px 32px;
+  margin-top: 40px;
+  color: var(--text-muted);
 }
 
 .socialMedia svg {
-  color: white;
-  margin: 20px;
-  font-size: 70px;
+  color: var(--hl-blue);
+  margin: 12px;
+  font-size: 48px;
   cursor: pointer;
 }
 
+.socialMedia svg:hover {
+  color: var(--hl-purple);
+}
+
 .footer p {
-  color: white;
+  color: var(--text-muted);
 }
 
 @media only screen and (max-width: 600px) {
   .footer svg {
-    font-size: 50px;
+    font-size: 36px;
   }
 }

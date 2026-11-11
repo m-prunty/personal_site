@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Tooltip from "@mui/material/Tooltip";
 import { api } from "../api";
 import type { AppNotification, Book } from "../types";
 import { useAsync } from "../hooks/useAsync";
@@ -175,25 +176,35 @@ export default function Books({
     <div className="showcase-grid" aria-label="Books showcase">
       <div className="showcase-row">
         <h2 style={{ margin: 0 }}>Books</h2>
-        <button onClick={() => void refreshBooks()} disabled={listStatus === "loading"}>
-          {listStatus === "loading" ? "Refreshing..." : "Refresh (api.listBooks)"}
-        </button>
+        <Tooltip title="api.listBooks — GET /books/" arrow>
+          <span>
+            <button onClick={() => void refreshBooks()} disabled={listStatus === "loading"}>
+              {listStatus === "loading" ? "Refreshing..." : "Refresh"}
+            </button>
+          </span>
+        </Tooltip>
       </div>
       <p className="muted" style={{ margin: 0 }}>
         Showcasing hooks: <code>createBook</code>, <code>updateStock</code>, <code>getBook</code>, <code>listBooks</code>
       </p>
 
       <section className="showcase-section" aria-labelledby="create-book-heading">
-        <h3 id="create-book-heading">Create Book (api.createBook)</h3>
+        <Tooltip title="api.createBook — POST /books/" arrow>
+          <h3 id="create-book-heading" style={{ width: "fit-content" }}>Create Book</h3>
+        </Tooltip>
         <form onSubmit={handleCreate} className="showcase-form">
-          <label>Title<input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></label>
-          <label>Author<input value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} required /></label>
-          <label>Price<input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required /></label>
-          <label>Initial stock<input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} required /></label>
+          <Tooltip title="Book title" arrow><label>Title<input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></label></Tooltip>
+          <Tooltip title="Book author" arrow><label>Author<input value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} required /></label></Tooltip>
+          <Tooltip title="Book price (number)" arrow><label>Price<input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required /></label></Tooltip>
+          <Tooltip title="Initial stock quantity" arrow><label>Initial stock<input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} required /></label></Tooltip>
           <div className="showcase-row" aria-live="polite">
-            <button type="submit" disabled={createStatus === "loading"}>
-              {createStatus === "loading" ? "Creating..." : "Create Book"}
-            </button>
+            <Tooltip title="Create a new book via api.createBook (POST /books/)" arrow>
+              <span>
+                <button type="submit" disabled={createStatus === "loading"}>
+                  {createStatus === "loading" ? "Creating..." : "Create Book"}
+                </button>
+              </span>
+            </Tooltip>
             {createStatus === "success" && <span className="success">Created successfully{createdId ? ` (id: ${createdId})` : ""}.</span>}
             {createStatus === "error" && <span className="error">{createError}</span>}
           </div>
@@ -201,30 +212,40 @@ export default function Books({
       </section>
 
       <section className="showcase-section" aria-labelledby="update-stock-heading">
-        <h3 id="update-stock-heading">Update Stock (api.updateStock, delta)</h3>
+        <Tooltip title="api.updateStock — POST /books/{book_id}/stock/ (delta)" arrow>
+          <h3 id="update-stock-heading" style={{ width: "fit-content" }}>Update Stock</h3>
+        </Tooltip>
         <form onSubmit={handleStock} className="showcase-form">
-          <label>
-            Book
-            <select value={stockUpdate.bookId} onChange={(e) => setStockUpdate({ ...stockUpdate, bookId: e.target.value })} required>
-              <option value="" disabled>Select a book</option>
-              {books.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.title ?? "(untitled)"} — {b.id} (stock: {b.stock ?? "?"})
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Stock delta (signed integer; backend applies <code>stock += quantity</code>)
-            <input type="number" step="1" placeholder="e.g. 5 or -2" value={stockUpdate.delta} onChange={(e) => setStockUpdate({ ...stockUpdate, delta: e.target.value })} required />
-          </label>
+          <Tooltip title="Select book to update stock for" arrow>
+            <label>
+              Book
+              <select value={stockUpdate.bookId} onChange={(e) => setStockUpdate({ ...stockUpdate, bookId: e.target.value })} required>
+                <option value="" disabled>Select a book</option>
+                {books.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.title ?? "(untitled)"} — {b.id} (stock: {b.stock ?? "?"})
+                  </option>
+                ))}
+              </select>
+            </label>
+          </Tooltip>
+          <Tooltip title="Signed integer delta (positive adds, negative subtracts)" arrow>
+            <label>
+              Stock delta (signed integer; backend applies <code>stock += quantity</code>)
+              <input type="number" step="1" placeholder="e.g. 5 or -2" value={stockUpdate.delta} onChange={(e) => setStockUpdate({ ...stockUpdate, delta: e.target.value })} required />
+            </label>
+          </Tooltip>
           {selectedStockBook && typeof selectedStockBook.stock === "number" && stockUpdate.delta && Number.isFinite(Number(stockUpdate.delta)) && (
             <div className="info">Preview: {selectedStockBook.stock} + ({Number(stockUpdate.delta)}) = {selectedStockBook.stock + Number(stockUpdate.delta)}</div>
           )}
           <div className="showcase-row" aria-live="polite">
-            <button type="submit" disabled={stockStatus === "loading"}>
-              {stockStatus === "loading" ? "Updating..." : "Apply Stock Delta"}
-            </button>
+            <Tooltip title="Apply stock delta via api.updateStock (POST /books/{book_id}/stock/)" arrow>
+              <span>
+                <button type="submit" disabled={stockStatus === "loading"}>
+                  {stockStatus === "loading" ? "Updating..." : "Apply Stock Delta"}
+                </button>
+              </span>
+            </Tooltip>
             {stockStatus === "success" && (
               <span className="success">Stock updated{stockBeforeAfter ? ` (${stockBeforeAfter.before} → ${stockBeforeAfter.after}, delta ${stockBeforeAfter.delta})` : ""}.</span>
             )}
@@ -234,7 +255,9 @@ export default function Books({
       </section>
 
       <section className="showcase-section" aria-labelledby="book-list-heading">
-        <h3 id="book-list-heading">Book List (api.listBooks)</h3>
+        <Tooltip title="api.listBooks — GET /books/" arrow>
+          <h3 id="book-list-heading" style={{ width: "fit-content" }}>Book List</h3>
+        </Tooltip>
         {listStatus === "loading" && (
           <div className="showcase-stack" aria-label="Loading books">
             <div className="skeleton" style={{ width: "60%" }} />
@@ -243,7 +266,7 @@ export default function Books({
           </div>
         )}
         {listStatus === "error" && (
-          <div className="error">Failed to load books: {listError} <button onClick={() => void refreshBooks()}>Retry</button></div>
+          <div className="error">Failed to load books: {listError} <Tooltip title="Retry api.listBooks" arrow><span><button onClick={() => void refreshBooks()}>Retry</button></span></Tooltip></div>
         )}
         {listStatus !== "loading" && books.length === 0 && listStatus !== "error" && (
           <div className="muted">No books found. Create one to populate the list.</div>
@@ -262,7 +285,11 @@ export default function Books({
                       <td className="mono">{b.id} {highlighted ? <span title="Related to recent notification">●</span> : null}</td>
                       <td>{b.title ?? "(unknown)"}</td>
                       <td>{typeof b.stock === "number" ? b.stock : "?"}</td>
-                      <td><button onClick={() => bookDetail.run(api.getBook, b.id)}>Details (api.getBook)</button></td>
+                      <td>
+                        <Tooltip title="api.getBook — GET /books/{id}" arrow>
+                          <span><button onClick={() => bookDetail.run(api.getBook, b.id)}>Details</button></span>
+                        </Tooltip>
+                      </td>
                     </tr>
                   );
                 })}
@@ -273,7 +300,9 @@ export default function Books({
       </section>
 
       <section className="showcase-section" aria-labelledby="book-details-heading">
-        <h3 id="book-details-heading">Book Details Panel (api.getBook)</h3>
+        <Tooltip title="api.getBook — GET /books/{id}" arrow>
+          <h3 id="book-details-heading" style={{ width: "fit-content" }}>Book Details Panel</h3>
+        </Tooltip>
         {bookDetail.status === "idle" && <div className="muted">Select “Details” on a book to fetch and inspect full response fields.</div>}
         {bookDetail.status === "loading" && <div className="showcase-stack"><div className="skeleton" style={{ width: "50%" }} /><div className="skeleton" style={{ width: "90%" }} /></div>}
         {bookDetail.status === "error" && <div className="error">Error: {bookDetail.error}</div>}

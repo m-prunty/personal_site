@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Tooltip from "@mui/material/Tooltip";
 import { api } from "../api";
 import { ORDER_STATUSES } from "../types";
 import type { AppNotification, Book, Order, OrderItem, OrderStatus } from "../types";
@@ -185,9 +186,13 @@ export default function Orders({
     <div>
       <div className="showcase-row">
         <h2 style={{ margin: 0 }}>Orders</h2>
-        <button onClick={() => void refreshAll()} disabled={ordersStatus === "loading" || booksStatus === "loading"}>
-          {(ordersStatus === "loading" || booksStatus === "loading") ? "Refreshing..." : "Refresh (api.listOrders + api.listBooks)"}
-        </button>
+        <Tooltip title="api.listOrders — GET /orders/ and api.listBooks — GET /books/" arrow>
+          <span>
+            <button onClick={() => void refreshAll()} disabled={ordersStatus === "loading" || booksStatus === "loading"}>
+              {(ordersStatus === "loading" || booksStatus === "loading") ? "Refreshing..." : "Refresh"}
+            </button>
+          </span>
+        </Tooltip>
       </div>
       <div className="info" style={{ marginTop: 6 }}>
         Data status: books={booksStatus} ({books.length}){booksError ? ` — ${booksError}` : ""}; orders={ordersStatus} ({orders.length}){ordersError ? ` — ${ordersError}` : ""}
@@ -197,12 +202,14 @@ export default function Orders({
       </p>
 
       <section className="showcase-section">
-        <h3 style={{ marginTop: 0 }}>Order Builder (createOrder payload)</h3>
+        <Tooltip title="api.createOrder — POST /orders/ (build payload and submit)" arrow>
+          <h3 style={{ marginTop: 0, width: "fit-content" }}>Order Builder</h3>
+        </Tooltip>
         {booksStatus === "loading" && <div className="info">Loading books for selection…</div>}
         {booksStatus === "error" && (
           <div className="error" style={{ marginBottom: 8 }}>
             Failed to load books: {booksError}{" "}
-            <button type="button" onClick={() => void refreshBooks()}>Retry</button>
+            <Tooltip title="Retry api.listBooks" arrow><span><button type="button" onClick={() => void refreshBooks()}>Retry</button></span></Tooltip>
           </div>
         )}
         {booksStatus === "success" && books.length === 0 && (
@@ -235,7 +242,7 @@ export default function Orders({
             onChange={(e) => setItemForm({ ...itemForm, qty: e.target.value })}
             required
           />
-          <button type="submit">Add Item</button>
+          <Tooltip title="Add selected book/quantity to order payload" arrow><span><button type="submit">Add Item</button></span></Tooltip>
         </form>
 
         {itemForm.bookId && (
@@ -271,7 +278,7 @@ export default function Orders({
                       <td style={{ padding: "6px", fontFamily: "monospace", fontSize: 12 }}>{item.book_id}</td>
                       <td style={{ padding: "6px" }}>{item.quantity}</td>
                       <td style={{ padding: "6px" }}>{b?.stock ?? "?"}</td>
-                      <td style={{ padding: "6px" }}><button onClick={() => handleRemoveItem(i)}>Remove</button></td>
+                      <td style={{ padding: "6px" }}><Tooltip title="Remove item from payload" arrow><span><button onClick={() => handleRemoveItem(i)}>Remove</button></span></Tooltip></td>
                     </tr>
                   );
                 })}
@@ -284,16 +291,22 @@ export default function Orders({
         )}
 
         <div style={{ marginTop: 10 }}>
-          <strong style={{ fontSize: 13 }}>Request payload preview (api.createOrder):</strong>
+          <Tooltip title="api.createOrder — POST /orders/" arrow>
+            <strong style={{ fontSize: 13, width: "fit-content", display: "inline-block" }}>Request payload preview</strong>
+          </Tooltip>
           <pre className="pre">
             {JSON.stringify({ items: orderItems }, null, 2)}
           </pre>
         </div>
 
         <form onSubmit={handleCreate} style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <button type="submit" disabled={createStatus === "loading" || orderItems.length === 0}>
-            {createStatus === "loading" ? "Creating..." : "Create Order (api.createOrder)"}
-          </button>
+          <Tooltip title="api.createOrder — POST /orders/" arrow>
+            <span>
+              <button type="submit" disabled={createStatus === "loading" || orderItems.length === 0}>
+                {createStatus === "loading" ? "Creating..." : "Create Order"}
+              </button>
+            </span>
+          </Tooltip>
           {createStatus === "success" && (
             <span className="success">
               Order created{createdOrderId ? ` (id: ${createdOrderId})` : ""}.
@@ -304,12 +317,14 @@ export default function Orders({
       </section>
 
       <section className="showcase-section">
-        <h3 style={{ marginTop: 0 }}>Change Status (api.changeStatus)</h3>
+        <Tooltip title="api.changeStatus — POST /orders/{order_id}/status/" arrow>
+          <h3 style={{ marginTop: 0, width: "fit-content" }}>Change Status</h3>
+        </Tooltip>
         {ordersStatus === "loading" && <div className="info">Loading orders…</div>}
         {ordersStatus === "error" && (
           <div className="error" style={{ marginBottom: 8 }}>
             Failed to load orders: {ordersError}{" "}
-            <button type="button" onClick={() => void refreshOrders()}>Retry</button>
+            <Tooltip title="Retry api.listOrders" arrow><span><button type="button" onClick={() => void refreshOrders()}>Retry</button></span></Tooltip>
           </div>
         )}
         {ordersStatus === "success" && orders.length === 0 && (
@@ -343,9 +358,11 @@ export default function Orders({
               <option key={status} value={status}>{status}</option>
             ))}
           </select>
-          <button type="submit" disabled={changeStatusState === "loading"}>
-            {changeStatusState === "loading" ? "Updating..." : "Change Status"}
-          </button>
+          <Tooltip title="Apply status change via api.changeStatus" arrow>
+            <span><button type="submit" disabled={changeStatusState === "loading"}>
+              {changeStatusState === "loading" ? "Updating..." : "Change Status"}
+            </button></span>
+          </Tooltip>
         </form>
         <div className="info" style={{ marginTop: 8 }}>
           {changeStatusState === "success" && lastStatusTransition && (
@@ -359,10 +376,12 @@ export default function Orders({
       </section>
 
       <section className="showcase-section">
-        <h3 style={{ marginTop: 0 }}>Orders List (api.listOrders)</h3>
+        <Tooltip title="api.listOrders — GET /orders/" arrow>
+          <h3 style={{ marginTop: 0, width: "fit-content" }}>Orders List</h3>
+        </Tooltip>
         {ordersStatus === "loading" && <div>Loading orders…</div>}
         {ordersStatus === "error" && (
-          <div className="error">Failed to load orders: {ordersError} <button onClick={() => void refreshOrders()}>Retry</button></div>
+          <div className="error">Failed to load orders: {ordersError} <Tooltip title="Retry api.listOrders" arrow><span><button onClick={() => void refreshOrders()}>Retry</button></span></Tooltip></div>
         )}
         {ordersStatus !== "loading" && orders.length === 0 && ordersStatus !== "error" && (
           <div className="muted">No orders found. Create one from the builder above.</div>
@@ -387,7 +406,9 @@ export default function Orders({
                       </td>
                       <td style={{ padding: "8px 6px" }}>{normalizeStatus(o.status)}</td>
                       <td style={{ padding: "8px 6px" }}>
-                        <button onClick={() => orderDetail.run(api.getOrder, o.id)}>Details (api.getOrder)</button>
+                        <Tooltip title="api.getOrder — GET /orders/{id}" arrow>
+                          <span><button onClick={() => orderDetail.run(api.getOrder, o.id)}>Details</button></span>
+                        </Tooltip>
                       </td>
                     </tr>
                   );
@@ -399,7 +420,9 @@ export default function Orders({
       </section>
 
       <section className="showcase-section">
-        <h3 style={{ marginTop: 0 }}>Order Details Panel (api.getOrder)</h3>
+        <Tooltip title="api.getOrder — GET /orders/{id}" arrow>
+          <h3 style={{ marginTop: 0, width: "fit-content" }}>Order Details Panel</h3>
+        </Tooltip>
         {orderDetail.status === "idle" && (
           <div className="muted">Select an order to fetch and inspect details.</div>
         )}

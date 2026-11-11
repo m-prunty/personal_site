@@ -74,9 +74,14 @@ export default function ShippyBooks() {
           )}
         </section>
 
-        <Books notifications={notifications} highlightedBookIds={highlights.bookIds} />
-        <hr style={{ margin: "20px 0" }} />
-        <Orders notifications={notifications} highlightedOrderIds={highlights.orderIds} />
+        <div className="books-orders-layout">
+          <div className="books-orders-panel">
+            <Books notifications={notifications} highlightedBookIds={highlights.bookIds} />
+          </div>
+          <div className="books-orders-panel">
+            <Orders notifications={notifications} highlightedOrderIds={highlights.orderIds} />
+          </div>
+        </div>
         <ApiHookInspector notifications={notifications} sseStatus={status} />
       </div>
     </div>

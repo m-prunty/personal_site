@@ -44,6 +44,7 @@ export default function Orders() {
   const [ordersStatus, setOrdersStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [ordersError, setOrdersError] = useState<string | null>(null);
   const [booksStatus, setBooksStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [booksError, setBooksError] = useState<string | null>(null);
 
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [itemForm, setItemForm] = useState<ItemFormState>({ bookId: "", qty: "" });
@@ -66,11 +67,13 @@ export default function Orders() {
 
   const refreshBooks = useCallback(async () => {
     setBooksStatus("loading");
+    setBooksError(null);
     try {
       const data = await api.listBooks();
-      setBooks(data as BookListItem[]);
+      setBooks(Array.isArray(data) ? (data as BookListItem[]) : []);
       setBooksStatus("success");
-    } catch {
+    } catch (err) {
+      setBooksError(err instanceof Error ? err.message : String(err));
       setBooksStatus("error");
     }
   }, []);
@@ -168,13 +171,28 @@ export default function Orders() {
 
       <section style={sectionStyle}>
         <h3 style={{ marginTop: 0 }}>Order Builder (createOrder payload)</h3>
+        {booksStatus === "loading" && <div style={{ fontSize: 13, color: "#374151" }}>Loading books for selection…</div>}
+        {booksStatus === "error" && (
+          <div style={{ fontSize: 13, color: "#dc2626", marginBottom: 8 }}>
+            Failed to load books: {booksError}{" "}
+            <button type="button" onClick={() => void refreshBooks()}>Retry</button>
+          </div>
+        )}
+        {booksStatus === "success" && books.length === 0 && (
+          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 8 }}>
+            No books available. Create books first, then refresh.
+          </div>
+        )}
         <form onSubmit={handleAddItem} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <select
             value={itemForm.bookId}
             onChange={(e) => setItemForm({ ...itemForm, bookId: e.target.value })}
             required
+            disabled={booksStatus === "loading"}
           >
-            <option value="" disabled>Select a book</option>
+            <option value="" disabled>
+              {booksStatus === "loading" ? "Loading books..." : "Select a book"}
+            </option>
             {books.map((book) => (
               <option key={book.id} value={book.id}>
                 {book.title ?? book.id} {book.author ? `— ${book.author}` : ""} (stock: {book.stock ?? "?"})

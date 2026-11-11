@@ -165,6 +165,9 @@ export default function Orders() {
           {(ordersStatus === "loading" || booksStatus === "loading") ? "Refreshing..." : "Refresh (api.listOrders + api.listBooks)"}
         </button>
       </div>
+      <div style={{ marginTop: 6, fontSize: 13, color: "#374151" }}>
+        Data status: books={booksStatus} ({books.length}){booksError ? ` — ${booksError}` : ""}; orders={ordersStatus} ({orders.length}){ordersError ? ` — ${ordersError}` : ""}
+      </div>
       <p style={{ margin: "4px 0 0", color: "#4b5563", fontSize: 13 }}>
         Showcasing hooks: <code>createOrder</code>, <code>changeStatus</code>, <code>getOrder</code>, <code>listOrders</code> (with <code>listBooks</code>)
       </p>
@@ -278,13 +281,28 @@ export default function Orders() {
 
       <section style={sectionStyle}>
         <h3 style={{ marginTop: 0 }}>Change Status (api.changeStatus)</h3>
+        {ordersStatus === "loading" && <div style={{ fontSize: 13, color: "#374151" }}>Loading orders…</div>}
+        {ordersStatus === "error" && (
+          <div style={{ fontSize: 13, color: "#dc2626", marginBottom: 8 }}>
+            Failed to load orders: {ordersError}{" "}
+            <button type="button" onClick={() => void refreshOrders()}>Retry</button>
+          </div>
+        )}
+        {ordersStatus === "success" && orders.length === 0 && (
+          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 8 }}>
+            No orders available. Create an order first, then refresh.
+          </div>
+        )}
         <form onSubmit={handleStatus} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <select
             value={statusUpdate.orderId}
             onChange={(e) => setStatusUpdate({ ...statusUpdate, orderId: e.target.value })}
             required
+            disabled={ordersStatus === "loading"}
           >
-            <option value="" disabled>Select an order</option>
+            <option value="" disabled>
+              {ordersStatus === "loading" ? "Loading orders..." : "Select an order"}
+            </option>
             {orders.map((order) => (
               <option key={order.id} value={order.id}>
                 {order.id} — {normalizeStatus(order.status)}

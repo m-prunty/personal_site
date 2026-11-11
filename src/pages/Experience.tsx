@@ -122,7 +122,7 @@ function Experience() {
             I have had a dynamic and varied career as a Chef since first
             starting in professional kitchens at 16 years old.
             <br />
-            I've worked my way up from dish washing to running my own kitchens
+            I&apos;ve worked my way up from dish washing to running my own kitchens
             in a broad variety of establishments in Ireland, U.K, France and
             Australia
           </p>

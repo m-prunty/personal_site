@@ -1,0 +1,19 @@
+/* revert: isolate Experience from global dark theme */
+.experience {
+  background: #f0f0f0;
+  color: #111111;
+  font-family: "Arial", sans-serif;
+  min-height: 100vh;
+  padding: 20px 0;
+}
+.experience h1,
+.experience h2,
+.experience h3,
+.experience h4,
+.experience h5,
+.experience h6 {
+  color: inherit;
+}
+.experience a {
+  color: #3e497a;
+}

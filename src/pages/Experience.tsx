@@ -4,6 +4,7 @@ import {
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import { School as SchoolIcon, Work as WorkIcon } from "@mui/icons-material";
+import "../styles/Experience.css";
 
 function Experience() {
   return (
@@ -12,7 +13,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="2026 - current"
-          iconStyle={{ background: "var(--hl-pale-green)", color: "#001b00" }}
+          iconStyle={{ background: "#e9d35b", color: "#fff" }}
           icon={<WorkIcon />}
         >
           <h3 className="vertical-timeline-element-title">Alignerr</h3>
@@ -25,7 +26,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2025 - current"
-          iconStyle={{ background: "var(--hl-blue)", color: "#001018" }}
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">42 Heilbronn</h3>
@@ -40,7 +41,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2023 - 2025"
-          iconStyle={{ background: "var(--hl-blue)", color: "#001018" }}
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">42 London</h3>
@@ -53,7 +54,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2023 - 2024"
-          iconStyle={{ background: "var(--hl-blue)", color: "#001018" }}
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">
@@ -72,7 +73,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2020 - 2022"
-          iconStyle={{ background: "var(--hl-blue)", color: "#001018" }}
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">UCC, Ireland</h3>
@@ -98,7 +99,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2018 - 2019"
-          iconStyle={{ background: "var(--hl-blue)", color: "#001018" }}
+          iconStyle={{ background: "#3e497a", color: "#fff" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">
@@ -114,7 +115,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="2006 - 2025"
-          iconStyle={{ background: "var(--hl-pale-green)", color: "#001b00" }}
+          iconStyle={{ background: "#e9d35b", color: "#fff" }}
           icon={<WorkIcon />}
         >
           <h3 className="vertical-timeline-element-title">Career as a Chef</h3>

@@ -80,7 +80,7 @@ export default function ApiHookInspector({
           </button>
           {sseStatus && <span className={sseBadge(sseStatus)} title="SSE notifications stream status">SSE: {sseStatus}</span>}
         </div>
-        <button onClick={clear} style={{ fontSize: 12, padding: "4px 8px", border: "1px solid #d1d5db", borderRadius: 4, background: "#fff", cursor: "pointer" }}>Clear</button>
+        <button onClick={clear} style={{ fontSize: 12, padding: "4px 8px", border: "1px solid var(--border)", borderRadius: 4, background: "var(--surface-2)", color: "var(--text)", cursor: "pointer" }}>Clear</button>
       </div>
       {open && (
         <div className="inspector-body">

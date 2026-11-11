@@ -381,7 +381,7 @@ export default function Orders({
                 {orders.map((o) => {
                   const highlighted = highlightedOrderIds?.has(o.id);
                   return (
-                    <tr key={o.id} style={{ borderBottom: "1px solid #f3f4f6", background: highlighted ? "#eff6ff" : undefined }}>
+                    <tr key={o.id} className={highlighted ? "highlight-order" : undefined}>
                       <td style={{ padding: "8px 6px", fontFamily: "monospace", fontSize: 12 }}>
                         {o.id} {highlighted ? <span title="Related to recent notification">●</span> : null}
                       </td>
@@ -406,7 +406,7 @@ export default function Orders({
         {orderDetail.status === "loading" && <div>Loading order details…</div>}
         {orderDetail.status === "error" && <div className="error">Error: {orderDetail.error}</div>}
         {orderDetail.status === "success" && orderDetail.data && (
-          <div style={{ display: "grid", gap: 8, background: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? "#eff6ff" : undefined, padding: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? 8 : 0, borderRadius: 6 }}>
+          <div className={`showcase-stack ${highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? "highlight-order" : ""}`} style={{ padding: highlightedOrderIds?.has((orderDetail.data as OrderListItem).id) ? 8 : 0, borderRadius: 6 }}>
             <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 4, fontSize: 14 }}>
               <strong>Order ID</strong><span style={{ fontFamily: "monospace" }}>{(orderDetail.data as OrderListItem).id}</span>
               <strong>Status</strong><span>{normalizeStatus((orderDetail.data as OrderListItem).status)}</span>

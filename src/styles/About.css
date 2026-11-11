@@ -1,33 +1,15 @@
-.about {
-  width: 100%; 
-  align-items: center;
-  font-family: "Arial", sans-serif;
-  color: #3e497a;
+.about-section {
+  color: var(--text);
+  background: var(--bg);
 }
 
-.about .md {
-  width: 40%;
-  font-size: 30px;
+.about-section h1,
+.about-section h2,
+.about-section h3 {
+  color: var(--accent);
 }
 
-.md {
-  width: 100%;
-  height: calc(100vh - 100px);
-  display: flex;
-  flex-direction: column;
-  justify-content: auto;
-  align-items: auto;
-  text-align: left;
-  background-color: #21325e;
-  color: #f0f0f0;
+.about-section p,
+.about-section li {
+  color: var(--text-muted);
 }
-
-
-.yt{
-  width: 100%;
-  align-items: center;
-  font-family: "Arial", sans-serif;
-  color: #000000;
-}
-
-

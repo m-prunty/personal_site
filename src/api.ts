@@ -1,6 +1,47 @@
 import type { Book, NewBook, Order, OrderItem, OrderStatus } from "./types";
+import { addApiActivity, updateApiActivity } from "./apiActivity";
 
 export const API_BASE: string = import.meta.env.VITE_API_BASE;
+
+async function track<T>(
+  hook: string,
+  endpoint: string,
+  method: string,
+  request: unknown,
+  fn: () => Promise<T>,
+  summarize?: (value: T) => unknown,
+): Promise<T> {
+  const id = addApiActivity({ hook, endpoint, method, request });
+  const start = performance.now();
+  try {
+    const result = await fn();
+    let response: unknown = summarize ? summarize(result) : result;
+    if (result instanceof Response) {
+      try {
+        const clone = result.clone();
+        const ct = clone.headers.get("content-type") || "";
+        response = ct.includes("application/json")
+          ? await clone.json()
+          : await clone.text();
+      } catch {
+        response = { ok: result.ok, status: result.status };
+      }
+    }
+    updateApiActivity(id, {
+      status: "success",
+      durationMs: Math.round(performance.now() - start),
+      response,
+    });
+    return result;
+  } catch (err) {
+    updateApiActivity(id, {
+      status: "error",
+      durationMs: Math.round(performance.now() - start),
+      error: err instanceof Error ? err.message : String(err),
+    });
+    throw err;
+  }
+}
 
 const post = (path: string, body: unknown): Promise<Response> =>
   fetch(`${API_BASE}${path}`, {
@@ -9,21 +50,58 @@ const post = (path: string, body: unknown): Promise<Response> =>
     headers: { "Content-Type": "application/json" },
   });
 
+async function getJson<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`);
+  if (!res.ok) {
+    let detail = "";
+    try {
+      detail = await res.text();
+    } catch {
+      detail = "";
+    }
+    throw new Error(`GET ${path} failed (${res.status})${detail ? `: ${detail}` : ""}`);
+  }
+  return res.json() as Promise<T>;
+}
+
 export const api = {
-  createBook: (book: NewBook): Promise<Response> => post("/books/", book),
+  createBook: (book: NewBook): Promise<Response> =>
+    track("api.createBook", "/books/", "POST", book, () => post("/books/", book)),
   updateStock: (bookId: string, quantity: number): Promise<Response> =>
-    post(`/books/${bookId}/stock/`, { quantity }),
+    track(
+      "api.updateStock",
+      `/books/${bookId}/stock/`,
+      "POST",
+      { bookId, quantity },
+      () => post(`/books/${bookId}/stock/`, { quantity }),
+    ),
   changeStatus: (orderId: string, status: OrderStatus): Promise<Response> =>
-    post(`/orders/${orderId}/status/`, { status }),
+    track(
+      "api.changeStatus",
+      `/orders/${orderId}/status/`,
+      "POST",
+      { orderId, status },
+      () => post(`/orders/${orderId}/status/`, { status }),
+    ),
   createOrder: (items: OrderItem[]): Promise<Response> =>
-    post("/orders/", { items }),
+    track("api.createOrder", "/orders/", "POST", { items }, () =>
+      post("/orders/", { items }),
+    ),
 
   getBook: (id: string): Promise<Book> =>
-    fetch(`${API_BASE}/books/${id}`).then((r) => r.json()),
+    track("api.getBook", `/books/${id}`, "GET", { id }, () =>
+      getJson<Book>(`/books/${id}`),
+    ),
   listBooks: (): Promise<Book[]> =>
-    fetch(`${API_BASE}/books/`).then((r) => r.json()),
+    track("api.listBooks", "/books/", "GET", undefined, () =>
+      getJson<Book[]>("/books/"),
+    ),
   getOrder: (id: string): Promise<Order> =>
-    fetch(`${API_BASE}/orders/${id}`).then((r) => r.json()),
+    track("api.getOrder", `/orders/${id}`, "GET", { id }, () =>
+      getJson<Order>(`/orders/${id}`),
+    ),
   listOrders: (): Promise<Order[]> =>
-    fetch(`${API_BASE}/orders/`).then((r) => r.json()),
+    track("api.listOrders", "/orders/", "GET", undefined, () =>
+      getJson<Order[]>("/orders/"),
+    ),
 };

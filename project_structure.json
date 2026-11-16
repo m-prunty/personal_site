@@ -215,6 +215,16 @@
                 "description": "React component"
               }
             ]
+          },
+          "ThemeToggle.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "ThemeToggle",
+                "kind": "export default function",
+                "description": "React component"
+              }
+            ]
           }
         }
       },
@@ -234,9 +244,34 @@
           }
         }
       },
+      "context": {
+        "type": "directory",
+        "children": {
+          "ThemeContext.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "ThemeContext",
+                "kind": "export",
+                "description": "React context provider for dark/light theme"
+              }
+            ]
+          }
+        }
+      },
       "index.css": {
         "type": "file",
         "objects": []
+      },
+      "theme.ts": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "createAppTheme",
+            "kind": "export function",
+            "description": "Creates a MUI theme for dark or light mode"
+          }
+        ]
       },
       "main.tsx": {
         "type": "file",
@@ -318,6 +353,14 @@
             "objects": []
           },
           "Navbar.css": {
+            "type": "file",
+            "objects": []
+          },
+          "CV.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Experience.css": {
             "type": "file",
             "objects": []
           }

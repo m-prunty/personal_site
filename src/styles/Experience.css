@@ -1,19 +1,58 @@
-/* revert: isolate Experience from global dark theme */
 .experience {
-  background: #f0f0f0;
-  color: #111111;
-  font-family: "Arial", sans-serif;
   min-height: 100vh;
-  padding: 20px 0;
+  padding: 24px 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
 }
+
 .experience h1,
 .experience h2,
 .experience h3,
 .experience h4,
 .experience h5,
 .experience h6 {
-  color: inherit;
+  color: var(--accent);
 }
+
 .experience a {
-  color: #3e497a;
+  color: var(--hl-blue);
+}
+.experience a:hover {
+  color: var(--hl-purple);
+}
+
+/* Override react-vertical-timeline-component defaults to match theme */
+.vertical-timeline-element-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 20px;
+  font-family: var(--font-mono);
+}
+.vertical-timeline-element-content h3 {
+  color: var(--accent);
+}
+.vertical-timeline-element-content h4 {
+  color: var(--text-muted);
+}
+.vertical-timeline-element-content p {
+  color: var(--text);
+}
+.vertical-timeline-element-content a {
+  color: var(--hl-blue);
+}
+.vertical-timeline-element-content a:hover {
+  color: var(--hl-purple);
+}
+
+.vertical-timeline-element-icon {
+  background: var(--accent) !important;
+  color: var(--inverse-text) !important;
+  border-radius: 50%;
+}
+
+.vertical-timeline {
+  margin: 0 auto;
 }

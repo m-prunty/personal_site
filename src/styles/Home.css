@@ -1,43 +1,47 @@
 .home {
   width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  font-family: "Arial", sans-serif;
-  color: #111111;
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
 }
 
 .home_hd {
   width: 100vw;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: #222229;
-  background-image: url( "/quad_parabola_fin.svg" ) ;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
-  background-size: cover; /* Resize the background image to cover the entire container */
-  color: #f0f0f0;
+  background: var(--surface);
+  background-image: url("/quad_parabola_fin.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: var(--text);
+  padding-top: 80px;
 }
+
 .home_hd h2 {
-  font-family:   "Courier New", "Lucida Console",monospace;
-  /*font-family: Arial, Helvetica, sans-serif;*/
-/*monospace;"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;*/
-  
+  font-family: "Courier New", "Lucida Console", monospace;
   font-size: 80px;
-  color: #ffffff;
-  height: 50px;
+  color: var(--accent);
+  margin: 0;
 }
 
 .home_hd .prompt {
   width: 40%;
   font-size: 30px;
+  margin-top: 16px;
 }
 .prompt svg {
   font-size: 60px;
   margin: 5px;
-  color: white;
+  color: var(--text);
 }
 
 .skills {
@@ -47,56 +51,56 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  padding: 40px 20px;
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .skills h1 {
-  color: #111111;
+  color: var(--accent);
+  margin: 0 0 20px 0;
 }
 
 .skills .list {
   list-style: none;
   width: 60%;
+  padding: 0;
+  margin: 0;
 }
 
 .list span {
   font-size: 20px;
+  color: var(--text-muted);
+}
+
+.list li {
+  margin-bottom: 12px;
+}
+
+.home a {
+  color: var(--hl-blue);
+  text-decoration: underline;
+}
+.home a:hover {
+  color: var(--hl-purple);
 }
 
 @media only screen and (max-width: 625px) {
   .home_hd h2 {
+    font-size: 48px;
   }
-
   .home_hd .prompt {
     margin-top: 100px;
     width: 80%;
+    font-size: 24px;
   }
-  
   .skills {
     text-align: center;
   }
   .list {
-    padding: 0;
+    width: 90%;
   }
-
   .skills h2 {
     font-size: 30px;
   }
-}
-
-/* revert: isolate Home from global dark theme */
-.home {
-  background: #ffffff;
-  color: #111111;
-  font-family: "Arial", sans-serif;
-}
-.home h1,
-.home h2,
-.home h3,
-.home h4,
-.home h5,
-.home h6 {
-  color: inherit;
-}
-.home a {
-  color: inherit;
 }

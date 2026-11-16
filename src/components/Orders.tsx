@@ -246,7 +246,7 @@ export default function Orders({
         </form>
 
         {itemForm.bookId && (
-          <div style={{ marginTop: 8, fontSize: 13, color: "#374151" }}>
+          <div style={{ marginTop: 8, fontSize: 13, color: "var(--text-muted)" }}>
             {(() => {
               const b = bookById.get(itemForm.bookId);
               if (!b) return "Selected book details not loaded.";
@@ -256,12 +256,12 @@ export default function Orders({
         )}
 
         {orderItems.length === 0 ? (
-          <div style={{ marginTop: 8, color: "#6b7280", fontSize: 13 }}>No items added yet.</div>
+          <div style={{ marginTop: 8, color: "var(--text-muted)", fontSize: 13 }}>No items added yet.</div>
         ) : (
           <div style={{ marginTop: 8, overflowX: "auto" }}>
             <table className="data-table">
               <thead>
-                <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+                <tr style={{ textAlign: "left", borderBottom: `1px solid var(--border)` }}>
                   <th style={{ padding: "6px" }}>Book</th>
                   <th style={{ padding: "6px" }}>Book ID</th>
                   <th style={{ padding: "6px" }}>Qty</th>
@@ -273,7 +273,7 @@ export default function Orders({
                 {orderItems.map((item, i) => {
                   const b = bookById.get(item.book_id);
                   return (
-                    <tr key={`${item.book_id}-${i}`} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                    <tr key={`${item.book_id}-${i}`} style={{ borderBottom: `1px solid var(--border)` }}>
                       <td style={{ padding: "6px" }}>{b?.title ?? "(unknown title)"}</td>
                       <td style={{ padding: "6px", fontFamily: "monospace", fontSize: 12 }}>{item.book_id}</td>
                       <td style={{ padding: "6px" }}>{item.quantity}</td>
@@ -390,7 +390,7 @@ export default function Orders({
           <div className="table-wrap">
             <table className="data-table">
               <thead>
-                <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+                <tr style={{ textAlign: "left", borderBottom: `1px solid var(--border)` }}>
                   <th style={{ padding: "8px 6px" }}>Order ID</th>
                   <th style={{ padding: "8px 6px" }}>Status</th>
                   <th style={{ padding: "8px 6px" }}>Actions</th>
@@ -444,7 +444,7 @@ export default function Orders({
                 <div className="table-wrap" style={{ marginTop: 4 }}>
                   <table className="data-table">
                     <thead>
-                      <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+                      <tr style={{ textAlign: "left", borderBottom: `1px solid var(--border)` }}>
                         <th style={{ padding: "6px" }}>Book</th>
                         <th style={{ padding: "6px" }}>Book ID</th>
                         <th style={{ padding: "6px" }}>Quantity</th>
@@ -455,7 +455,7 @@ export default function Orders({
                         const bid = it.book_id ?? "";
                         const b = bookById.get(bid);
                         return (
-                          <tr key={`${bid}-${idx}`} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                          <tr key={`${bid}-${idx}`} style={{ borderBottom: `1px solid var(--border)` }}>
                             <td style={{ padding: "6px" }}>{b?.title ?? (bid ? "(unknown title)" : "-")}</td>
                             <td style={{ padding: "6px", fontFamily: "monospace", fontSize: 12 }}>{bid || "-"}</td>
                             <td style={{ padding: "6px" }}>{it.quantity ?? "-"}</td>
@@ -466,7 +466,7 @@ export default function Orders({
                   </table>
                 </div>
               ) : (
-                <div style={{ color: "#6b7280", fontSize: 13, marginTop: 4 }}>No items available in this response.</div>
+                <div style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>No items available in this response.</div>
               )}
             </div>
 

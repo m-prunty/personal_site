@@ -1,94 +1,127 @@
 .navbar {
-  width: 100vw;
-  height: 100px;
-  background: #333339;
-}
-.logo{
-  width: 90px;
-  height: 90px;
-  display: flex;
-  align-items: start;
-  justify-content: flex-start;
-}
-.links {
-  width: 100vw;
-  height: 100%;
-  display: flex;
-  align-items: start;
-  justify-content: flex-start;
-  color: white;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  margin: 20px;
-  font-size: 25px;
-}
-
-.toggleButton {
   width: 100%;
-  height: 100px;
+  min-height: 80px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.toggleButton svg {
-  font-size: 50px;
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
-.toggleButton button {
-  margin-right: 20px;
+
+.logo {
+  width: 70px;
+  height: 70px;
+  display: block;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text);
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar-links a {
+  color: var(--hl-blue);
+  text-decoration: none;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.navbar-links a:hover,
+.navbar-links a:focus-visible {
+  color: var(--hl-purple);
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.menu-toggle {
   background-color: transparent;
-  border: none;
-  color: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
   cursor: pointer;
+  padding: 6px 10px;
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#open {
-  height: 100vh;
+.menu-toggle svg {
+  font-size: 24px;
 }
 
-#open .links {
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-top: 100px;
-}
-
-#open a {
-  width: 100%;
-  text-align: center;
-}
-
-@media only screen and (max-width: 900px) {
-  .navbar a {
-    width: 70px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .toggleButton {
+/* Mobile: hide links by default, show in overlay when open */
+@media (min-width: 600px) {
+  .navbar-links {
     display: flex;
   }
-  #close a {
-    /*display: none;*/
+  .menu-toggle {
+    display: none;
   }
 }
 
-@media only screen and (min-width: 600px) {
-  .toggleButton {
+@media (max-width: 599px) {
+  .navbar-links {
     display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
   }
 
-  .hiddenLinks {
-    /*display: none;*/
+  #open .navbar-links {
+    display: flex;
   }
 
-  #open {
-    height: 100px;
+  .navbar-links a {
+    width: 100%;
+    text-align: left;
+    margin: 6px 0;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid var(--border);
   }
 
-  #open .links {
-    flex-direction: row;
+  .navbar-links a:last-child {
+    border-bottom: none;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .navbar-controls {
+    justify-content: flex-end;
+    width: 100%;
   }
 }

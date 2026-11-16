@@ -4,15 +4,16 @@ import {
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import { School as SchoolIcon, Work as WorkIcon } from "@mui/icons-material";
+import "../styles/Experience.css";
 
 function Experience() {
   return (
     <div className="experience">
-      <VerticalTimeline lineColor="#3e497a">
+      <VerticalTimeline lineColor="var(--accent)">
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="2026 - current"
-          iconStyle={{ background: "#e9d35b", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<WorkIcon />}
         >
           <h3 className="vertical-timeline-element-title">Alignerr</h3>
@@ -25,7 +26,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2025 - current"
-          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">42 Heilbronn</h3>
@@ -40,7 +41,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2023 - 2025"
-          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">42 London</h3>
@@ -53,7 +54,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2023 - 2024"
-          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">
@@ -72,7 +73,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2020 - 2022"
-          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">UCC, Ireland</h3>
@@ -88,7 +89,7 @@ function Experience() {
             Python, Java, SQL, R, Statistics and Probability, Calculus
             (Multivariable), Linear Algebra, Algorithms and Data Structures,
             Maths Modelling, Regression Analysis.
-            <a href="https://ucc-ie-public.courseleaf.com/programmes/bscdsa/#programmerequirementstext">
+            <a href="https://ucc-ie-public.courseleaf.com/programmes/bscdsa/#programmerequirements">
               {" "}
               full list...{" "}
             </a>
@@ -98,7 +99,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--education"
           date="2018 - 2019"
-          iconStyle={{ background: "#3e497a", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<SchoolIcon />}
         >
           <h3 className="vertical-timeline-element-title">
@@ -114,7 +115,7 @@ function Experience() {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="2006 - 2025"
-          iconStyle={{ background: "#e9d35b", color: "#fff" }}
+          iconStyle={{ background: "var(--accent)", color: "var(--inverse-text)" }}
           icon={<WorkIcon />}
         >
           <h3 className="vertical-timeline-element-title">Career as a Chef</h3>
@@ -122,7 +123,7 @@ function Experience() {
             I have had a dynamic and varied career as a Chef since first
             starting in professional kitchens at 16 years old.
             <br />
-            I've worked my way up from dish washing to running my own kitchens
+            I&apos;ve worked my way up from dish washing to running my own kitchens
             in a broad variety of establishments in Ireland, U.K, France and
             Australia
           </p>

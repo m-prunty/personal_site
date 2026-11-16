@@ -17,7 +17,7 @@ export const MDRender = (props: MDRenderProps) => {
 
   return (
     <div>
-      <ReactMarkdown children={md} />
+      <ReactMarkdown>{md}</ReactMarkdown>
     </div>
   );
 };

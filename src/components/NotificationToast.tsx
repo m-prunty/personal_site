@@ -3,11 +3,20 @@ import type { AppNotification, NotificationKind } from "../types";
 
 const STYLES: Record<NotificationKind, CSSProperties> = {
   order_confirmation: {
-    borderLeft: "4px solid #22c55e",
-    background: "#f0fdf4",
+    borderLeft: "4px solid var(--hl-pale-green)",
+    background: "var(--surface-2)",
+    color: "var(--text)",
   },
-  stock_alert: { borderLeft: "4px solid #f97316", background: "#fff7ed" },
-  status_update: { borderLeft: "4px solid #3b82f6", background: "#eff6ff" },
+  stock_alert: {
+    borderLeft: "4px solid var(--hl-purple)",
+    background: "var(--surface-2)",
+    color: "var(--text)",
+  },
+  status_update: {
+    borderLeft: "4px solid var(--hl-blue)",
+    background: "var(--surface-2)",
+    color: "var(--text)",
+  },
 };
 
 interface NotificationToastProps {
@@ -50,12 +59,14 @@ function SingleNotification({
       <span style={{ fontSize: 14 }}>{notification.message}</span>
       <button
         onClick={() => onDismiss(notification.id)}
+        aria-label="Dismiss notification"
         style={{
           marginLeft: 12,
           background: "none",
           border: "none",
           cursor: "pointer",
           fontSize: 16,
+          color: "var(--text)",
         }}
       >
         ×

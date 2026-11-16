@@ -1,0 +1,455 @@
+{
+  ".env.development": {
+    "type": "file",
+    "objects": []
+  },
+  ".env.production": {
+    "type": "file",
+    "objects": []
+  },
+  ".github": {
+    "type": "directory",
+    "children": {
+      "workflows": {
+        "type": "directory",
+        "children": {
+          "deploy_front.yml": {
+            "type": "file",
+            "objects": []
+          },
+          "main.yml": {
+            "type": "file",
+            "objects": []
+          }
+        }
+      }
+    }
+  },
+  ".gitignore": {
+    "type": "file",
+    "objects": []
+  },
+  "README.md": {
+    "type": "file",
+    "objects": []
+  },
+  "dist": {
+    "type": "directory",
+    "children": {},
+    "note": "Build output directory; contents not enumerated"
+  },
+  "eslint.config.ts": {
+    "type": "file",
+    "objects": [
+      {
+        "name": "default",
+        "kind": "export default",
+        "description": "ESLint flat config (defineConfig([...]))"
+      }
+    ]
+  },
+  "index.html": {
+    "type": "file",
+    "objects": []
+  },
+  "node_modules": {
+    "type": "directory",
+    "children": {},
+    "note": "Dependencies directory; contents not enumerated"
+  },
+  "package-lock.json": {
+    "type": "file",
+    "objects": []
+  },
+  "package.json": {
+    "type": "file",
+    "objects": [
+      "name",
+      "private",
+      "version",
+      "type",
+      "scripts",
+      "dependencies",
+      "devDependencies",
+      "overrides"
+    ]
+  },
+  "public": {
+    "type": "directory",
+    "children": {
+      "quad_parabola_fin.svg": {
+        "type": "file",
+        "objects": []
+      },
+      "resume.md": {
+        "type": "file",
+        "objects": []
+      },
+      "site.md": {
+        "type": "file",
+        "objects": []
+      },
+      "vite.svg": {
+        "type": "file",
+        "objects": []
+      }
+    }
+  },
+  "src": {
+    "type": "directory",
+    "children": {
+      "App.css": {
+        "type": "file",
+        "objects": []
+      },
+      "App.tsx": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "App",
+            "kind": "default export",
+            "description": "React root component"
+          }
+        ]
+      },
+      "api.ts": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "API_BASE",
+            "kind": "export const",
+            "type": "string",
+            "description": "API base URL from import.meta.env.VITE_API_BASE"
+          },
+          {
+            "name": "api",
+            "kind": "export const",
+            "type": "object",
+            "members": [
+              "createBook(book: NewBook): Promise<Response>",
+              "updateStock(bookId: string, quantity: number): Promise<Response>",
+              "changeStatus(orderId: string, status: OrderStatus): Promise<Response>",
+              "createOrder(items: OrderItem[]): Promise<Response>",
+              "getBook(id: string): Promise<Book>",
+              "listBooks(): Promise<Book[]>",
+              "getOrder(id: string): Promise<Order>",
+              "listOrders(): Promise<Order[]>"
+            ]
+          }
+        ]
+      },
+      "components": {
+        "type": "directory",
+        "children": {
+          ".Orders.tsx.swp": {
+            "type": "file",
+            "objects": [],
+            "note": "Vim swap file artifact"
+          },
+          "Books.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Books",
+                "kind": "export default function",
+                "description": "React component"
+              }
+            ]
+          },
+          "Footer.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Footer",
+                "kind": "default export",
+                "description": "React component"
+              }
+            ]
+          },
+          "Markdown.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "MDRender",
+                "kind": "export const",
+                "description": "React component (props: MDRenderProps)"
+              }
+            ]
+          },
+          "Navbar.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Navbar",
+                "kind": "default export",
+                "description": "React component"
+              }
+            ]
+          },
+          "NotificationToast.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "NotificationToast",
+                "kind": "export default function",
+                "description": "React component"
+              }
+            ]
+          },
+          "Orders.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Orders",
+                "kind": "export default function",
+                "description": "React component"
+              }
+            ]
+          },
+          "Socials.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Socials",
+                "kind": "export const",
+                "description": "React component"
+              }
+            ]
+          },
+          "ThemeToggle.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "ThemeToggle",
+                "kind": "export default function",
+                "description": "React component"
+              }
+            ]
+          }
+        }
+      },
+      "hooks": {
+        "type": "directory",
+        "children": {
+          "useNotifications.ts": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "useNotifications",
+                "kind": "export function",
+                "signature": "(): UseNotificationsResult",
+                "description": "React hook"
+              }
+            ]
+          }
+        }
+      },
+      "context": {
+        "type": "directory",
+        "children": {
+          "ThemeContext.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "ThemeContext",
+                "kind": "export",
+                "description": "React context provider for dark/light theme"
+              }
+            ]
+          }
+        }
+      },
+      "index.css": {
+        "type": "file",
+        "objects": []
+      },
+      "theme.ts": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "createAppTheme",
+            "kind": "export function",
+            "description": "Creates a MUI theme for dark or light mode"
+          }
+        ]
+      },
+      "main.tsx": {
+        "type": "file",
+        "objects": [],
+        "note": "Application entry point (renders App, calls reportWebVitals); no exports"
+      },
+      "pages": {
+        "type": "directory",
+        "children": {
+          "CV.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "CV",
+                "kind": "default export",
+                "description": "React page component"
+              }
+            ]
+          },
+          "Experience.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Experience",
+                "kind": "default export",
+                "description": "React page component"
+              }
+            ]
+          },
+          "Home.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "Home",
+                "kind": "default export",
+                "description": "React page component"
+              }
+            ]
+          },
+          "ShippyBooks.tsx": {
+            "type": "file",
+            "objects": [
+              {
+                "name": "ShippyBooks",
+                "kind": "export default function",
+                "description": "React page component"
+              }
+            ]
+          }
+        }
+      },
+      "reportWebVitals.ts": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "reportWebVitals",
+            "kind": "default export",
+            "description": "Function for reporting web vitals"
+          }
+        ]
+      },
+      "styles": {
+        "type": "directory",
+        "children": {
+          "About.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Books.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Footer.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Home.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Navbar.css": {
+            "type": "file",
+            "objects": []
+          },
+          "CV.css": {
+            "type": "file",
+            "objects": []
+          },
+          "Experience.css": {
+            "type": "file",
+            "objects": []
+          }
+        }
+      },
+      "types.ts": {
+        "type": "file",
+        "objects": [
+          {
+            "name": "Book",
+            "kind": "export interface",
+            "members": [
+              "id: string",
+              "title: string",
+              "author: string",
+              "price: number",
+              "stock: number"
+            ]
+          },
+          {
+            "name": "NewBook",
+            "kind": "export type",
+            "description": "Omit<Book, \"id\">"
+          },
+          {
+            "name": "OrderItem",
+            "kind": "export interface",
+            "members": [
+              "book_id: string",
+              "quantity: number"
+            ]
+          },
+          {
+            "name": "ORDER_STATUSES",
+            "kind": "export const",
+            "description": "[\"pending\", \"processing\", \"shipped\", \"completed\", \"cancelled\"] as const"
+          },
+          {
+            "name": "OrderStatus",
+            "kind": "export type",
+            "description": "(typeof ORDER_STATUSES)[number]"
+          },
+          {
+            "name": "Order",
+            "kind": "export interface",
+            "members": [
+              "id: string",
+              "status: OrderStatus",
+              "items: OrderItem[]"
+            ]
+          },
+          {
+            "name": "NotificationKind",
+            "kind": "export type",
+            "description": "\"order_confirmation\" | \"stock_alert\" | \"status_update\""
+          },
+          {
+            "name": "AppNotification",
+            "kind": "export interface",
+            "members": [
+              "id: string",
+              "kind: NotificationKind",
+              "message: string"
+            ]
+          }
+        ]
+      },
+      "vite-env.d.ts": {
+        "type": "file",
+        "objects": []
+      }
+    }
+  },
+  "tsconfig.json": {
+    "type": "file",
+    "objects": []
+  },
+  "tsconfig.node.json": {
+    "type": "file",
+    "objects": []
+  },
+  "vite.config.ts": {
+    "type": "file",
+    "objects": [
+      {
+        "name": "default",
+        "kind": "export default",
+        "description": "Vite config (defineConfig with react/svgr plugins, assetsInclude ['**/*.md'])"
+      }
+    ]
+  }
+}

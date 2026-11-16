@@ -1,85 +1,211 @@
-.books {
-  width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-.books .bookTitle {
-  text-align: center;
-  color: #3e497a;
-  font-size: 60px;
-  font-weight: bolder;
+/* ShippyBooks API hooks showcase (dark terminal theme) */
+.BooksApp .app {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.bookList {
-  width: 70vw;
-  height: auto;
+.books-orders-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  place-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
-/* MENU ITEM STYLING */
-
-.bookItem {
-  border-radius: 15px;
-  width: 300px;
-  height: 400px;
-  margin: 40px;
-  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
-  text-align: center;
-}
-.bookItem:hover {
-  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.5);
-  transition: 0.3s ease-in;
-  cursor: pointer;
+.books-orders-panel {
+  min-width: 0;
 }
 
-.bookItem .bgImage {
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  width: 280px;
-  height: 300px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.bookItem h1 {
-  #width 20px;
-  font-size: 25px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.bookItem h2 {
-  font-size: 22px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-@media only screen and (max-width: 1300px) {
-  .bookList {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .bookList {
+@media (max-width: 1100px) {
+  .books-orders-layout {
     grid-template-columns: 1fr;
   }
 }
 
-@media only screen and (max-width: 800px) {
-  .bookList {
-    width: 100%;
-  }
-  .bookItem {
-    width: 300px;
-    height: 300px;
-  }
+.BooksApp .app-header {
+  background: var(--surface) !important;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.showcase-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.showcase-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.showcase-section h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.showcase-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.showcase-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.showcase-form {
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+}
+
+.showcase-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.showcase-form input,
+.showcase-form select,
+.showcase-row input,
+.showcase-row select {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.showcase-form button,
+.showcase-row button,
+.showcase-section button {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.showcase-form button:hover,
+.showcase-row button:hover,
+.showcase-section button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.showcase-form button:disabled,
+.showcase-row button:disabled,
+.showcase-section button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.muted { color: var(--text-muted); font-size: 13px; }
+.success { color: var(--hl-pale-green); font-size: 13px; }
+.error { color: var(--danger); font-size: 13px; }
+.info { color: var(--hl-blue); font-size: 13px; }
+
+.table-wrap { overflow-x: auto; }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--text);
+}
+.data-table th, .data-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.data-table thead th {
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+}
+.data-table tbody tr:hover {
+  background: var(--surface-2);
+}
+.mono { font-family: var(--font-mono); font-size: 12px; }
+.pre {
+  background: var(--bg);
+  color: var(--text);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+.kv-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 4px 8px;
+  font-size: 14px;
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--skeleton-color) 37%, var(--surface-2) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  border-radius: 4px;
+  height: 14px;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+.highlight-book { background: rgba(192, 132, 252, 0.15); }
+.highlight-order { background: rgba(192, 132, 252, 0.15); }
+.badge {
+  display: inline-block;
+  color: var(--inverse-text);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.badge-open { background: var(--hl-pale-green); color: var(--badge-open-text); }
+.badge-error { background: var(--danger); color: var(--inverse-text); }
+.badge-pending { background: var(--hl-blue); color: var(--inverse-text); }
+
+.inspector {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 12px 0 20px;
+  background: var(--surface);
+  color: var(--text);
+}
+.inspector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.inspector-body { padding: 12px; display: grid; gap: 12px; }
+.card-list { display: flex; flex-direction: column; gap: 8px; }
+.card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--surface-2);
+  font-size: 12px;
+  color: var(--text);
+}
+.status-success { color: var(--hl-pale-green); font-weight: 700; }
+.status-error { color: var(--danger); font-weight: 700; }
+.status-pending { color: var(--hl-blue); font-weight: 700; }
+
+@media (max-width: 700px) {
+  .kv-grid { grid-template-columns: 1fr; }
+  .showcase-row { align-items: stretch; }
 }

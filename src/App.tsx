@@ -7,11 +7,15 @@ import Experience from "./pages/Experience";
 import ShippyBooks from "./pages/ShippyBooks";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { appTheme } from "./theme";
+import { ThemeProvider as AppThemeProvider, useTheme } from "./context/ThemeContext";
+import { createAppTheme } from "./theme";
 
 function App() {
+  const { theme } = useTheme();
+  const muiTheme = createAppTheme(theme);
+
   return (
-    <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <div className="App">
         <Router>
@@ -29,4 +33,10 @@ function App() {
   );
 }
 
-export default App;
+export default function AppRoot() {
+  return (
+    <AppThemeProvider>
+      <App />
+    </AppThemeProvider>
+  );
+}
